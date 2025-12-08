@@ -5,6 +5,8 @@ import Leaderboard from './pages/Leaderboard';
 import MemeGenerator from './pages/MemeGenerator';
 import DSAGuide from './pages/DSAGuide';
 import AdminPanel from './pages/AdminPanel';
+import MobilePreview from './pages/MobilePreview';
+import IndiegogoPage from './pages/IndiegogoPage';
 import __Layout from './Layout.jsx';
 
 
@@ -16,6 +18,8 @@ export const PAGES = {
     "MemeGenerator": MemeGenerator,
     "DSAGuide": DSAGuide,
     "AdminPanel": AdminPanel,
+    "MobilePreview": MobilePreview,
+    "IndiegogoPage": IndiegogoPage,
 }
 
 export const pagesConfig = {
