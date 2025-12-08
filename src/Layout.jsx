@@ -5,7 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Skull, Home, AlertTriangle, Search, Trophy, Share2, 
-  BookOpen, Shield, Menu, X, LogOut, User, Coins
+  BookOpen, Shield, Menu, X, LogOut, User, Coins, Smartphone
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
