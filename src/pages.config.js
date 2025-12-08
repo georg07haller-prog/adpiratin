@@ -8,6 +8,7 @@ import AdminPanel from './pages/AdminPanel';
 import MobilePreview from './pages/MobilePreview';
 import IndiegogoPage from './pages/IndiegogoPage';
 import ExtensionDemo from './pages/ExtensionDemo';
+import Landing from './pages/Landing';
 import __Layout from './Layout.jsx';
 
 
@@ -22,6 +23,7 @@ export const PAGES = {
     "MobilePreview": MobilePreview,
     "IndiegogoPage": IndiegogoPage,
     "ExtensionDemo": ExtensionDemo,
+    "Landing": Landing,
 }
 
 export const pagesConfig = {
