@@ -17,6 +17,8 @@ const NAV_ITEMS = [
   { name: 'Leaderboard', icon: Trophy, page: 'Leaderboard' },
   { name: 'Meme Gen', icon: Share2, page: 'MemeGenerator' },
   { name: 'DSA Guide', icon: BookOpen, page: 'DSAGuide' },
+  { name: 'Extension Demo', icon: Shield, page: 'ExtensionDemo' },
+  { name: 'Mobile App', icon: Home, page: 'MobilePreview' },
 ];
 
 export default function Layout({ children, currentPageName }) {
