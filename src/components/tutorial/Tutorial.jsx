@@ -36,7 +36,7 @@ const TUTORIAL_STEPS = [
     title: 'Earn Pirate Points',
     description: 'Every action earns you points! Report violations (+25-35 pts), find alternatives (+15 pts), or kill ads (+5 pts). Climb ranks from Deck Swabber to Golden Galleon!',
     icon: Zap,
-    position: 'top-left',
+    position: 'bottom-right',
     highlight: '.pirate-profile',
     action: 'Your points are shown at the top. Complete actions to level up!'
   },
