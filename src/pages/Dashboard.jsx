@@ -107,26 +107,31 @@ export default function Dashboard() {
       <AnimatePresence>
         {showCoins && (
           <div className="fixed inset-0 pointer-events-none z-50">
-            {[...Array(20)].map((_, i) => (
+            {[...Array(30)].map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute text-4xl"
+                className="absolute"
                 initial={{ 
                   top: -50, 
                   left: `${Math.random() * 100}%`,
-                  rotate: 0 
+                  rotate: 0,
+                  scale: 0.5
                 }}
                 animate={{ 
                   top: '110%',
-                  rotate: 360 * 3
+                  rotate: [0, 180, 360, 540],
+                  scale: [0.5, 1.2, 1, 0.8]
                 }}
                 exit={{ opacity: 0 }}
                 transition={{ 
-                  duration: 2 + Math.random() * 2,
-                  delay: Math.random() * 0.5
+                  duration: 2 + Math.random() * 1.5,
+                  delay: Math.random() * 0.3,
+                  ease: "easeOut"
                 }}
               >
-                🪙
+                <div className="text-4xl drop-shadow-lg">
+                  {i % 3 === 0 ? '🪙' : i % 3 === 1 ? '💰' : '⚓'}
+                </div>
               </motion.div>
             ))}
           </div>
