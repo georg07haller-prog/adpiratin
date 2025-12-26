@@ -43,9 +43,9 @@ const TUTORIAL_STEPS = [
   {
     id: 'complete',
     title: 'Ready to Sail! ⚓',
-    description: 'Now go hunt those overpriced ads! Fair winds, fair prices!',
+    description: 'Go hunt ads! Fair winds!',
     icon: Sparkles,
-    position: 'center',
+    position: 'bottom-right',
     highlight: null
   }
 ];
@@ -160,7 +160,7 @@ export default function Tutorial({ isOpen, onClose, onComplete }) {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className={`fixed z-[52] ${getCardPosition()} max-w-sm mx-4`}
+            className={`fixed z-[52] ${getCardPosition()} max-w-xs mx-4`}
           >
             <Card className="bg-gradient-to-br from-[#1a2d4a] to-[#0f2137] border-[#d4af37] shadow-2xl overflow-hidden">
               {/* Top accent */}
