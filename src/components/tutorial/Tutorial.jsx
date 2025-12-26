@@ -45,7 +45,7 @@ const TUTORIAL_STEPS = [
     title: 'Ready to Sail! ⚓',
     description: 'Now go hunt those overpriced ads! Fair winds, fair prices!',
     icon: Sparkles,
-    position: 'bottom-right',
+    position: 'center',
     highlight: null
   }
 ];
