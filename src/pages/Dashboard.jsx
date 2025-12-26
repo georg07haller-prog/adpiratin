@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Skull, Target, Eye, EyeOff, AlertTriangle, Search, 
   Trophy, Coins, Anchor, Ship, Sparkles, Share2, ChevronRight,
-  Shield, Zap, Crown
+  Shield, Zap, Crown, HelpCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,6 +17,7 @@ import StatsCard from '@/components/dashboard/StatsCard';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import QuickActions from '@/components/dashboard/QuickActions';
 import AchievementBadge from '@/components/dashboard/AchievementBadge';
+import Tutorial from '@/components/tutorial/Tutorial';
 
 const RANKS = [
   { name: 'Deck Swabber', min: 0, max: 99, icon: Anchor },
@@ -30,10 +31,17 @@ const RANKS = [
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [showCoins, setShowCoins] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
+    
+    // Check if tutorial should be shown
+    const tutorialCompleted = localStorage.getItem('adpiratin_tutorial_completed');
+    if (!tutorialCompleted) {
+      setTimeout(() => setShowTutorial(true), 1000);
+    }
   }, []);
 
   const { data: pirateProfile, isLoading: profileLoading } = useQuery({
@@ -132,18 +140,29 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-gradient-to-br from-[#d4af37] to-[#b8962e] rounded-xl">
-              <Skull className="w-8 h-8 text-[#0a1628]" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gradient-to-br from-[#d4af37] to-[#b8962e] rounded-xl">
+                <Skull className="w-8 h-8 text-[#0a1628]" />
+              </div>
+              <div>
+                <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight">
+                  AdPiratin
+                </h1>
+                <p className="text-[#d4af37] text-sm font-medium">
+                  Arrr you ready to plunder overpriced ads?
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight">
-                AdPiratin
-              </h1>
-              <p className="text-[#d4af37] text-sm font-medium">
-                Arrr you ready to plunder overpriced ads?
-              </p>
-            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowTutorial(true)}
+              className="text-[#8ba3c7] hover:text-[#d4af37] hover:bg-[#1a2d4a]"
+              title="Show tutorial"
+            >
+              <HelpCircle className="w-6 h-6" />
+            </Button>
           </div>
         </motion.div>
 
@@ -152,6 +171,7 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
+          className="pirate-profile"
         >
           <Card className="bg-gradient-to-r from-[#1a2d4a]/80 to-[#0f2137]/80 backdrop-blur-xl border-[#d4af37]/20 mb-6 overflow-hidden">
             <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-[#d4af37]/10 to-transparent" />
@@ -208,7 +228,7 @@ export default function Dashboard() {
         </motion.div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 stats-card">
           <StatsCard 
             title="Ads Killed" 
             value={profile?.ads_killed || 0}
@@ -244,7 +264,7 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="mb-6"
+          className="mb-6 quick-actions"
         >
           <QuickActions />
         </motion.div>
