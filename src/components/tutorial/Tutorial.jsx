@@ -111,16 +111,16 @@ export default function Tutorial({ isOpen, onClose, onComplete }) {
   const getCardPosition = () => {
     switch (step.position) {
       case 'top-right':
-        return 'top-8 right-8';
+        return 'top-20 right-4 md:right-8';
       case 'top-left':
-        return 'top-8 left-8';
+        return 'top-20 left-4 md:left-8';
       case 'bottom-right':
-        return 'bottom-8 right-8';
+        return 'bottom-8 right-4 md:right-8';
       case 'bottom-left':
-        return 'bottom-8 left-8';
+        return 'bottom-8 left-4 md:left-8';
       case 'center':
       default:
-        return 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2';
+        return 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] md:w-auto';
     }
   };
 
@@ -160,7 +160,7 @@ export default function Tutorial({ isOpen, onClose, onComplete }) {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className={`fixed z-[52] ${getCardPosition()} max-w-md`}
+            className={`fixed z-[52] ${getCardPosition()} max-w-md mx-4`}
           >
             <Card className="bg-gradient-to-br from-[#1a2d4a] to-[#0f2137] border-[#d4af37] shadow-2xl overflow-hidden">
               {/* Top accent */}
