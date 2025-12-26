@@ -20,7 +20,10 @@ const MEME_TEMPLATES = [
   { id: 'busted', text: 'I busted {brand}\'s fake {type}! 🏴‍☠️', color: 'from-red-500 to-orange-500' },
   { id: 'found', text: 'Found a better deal than {brand}! Save {percent}%! 💰', color: 'from-green-500 to-emerald-500' },
   { id: 'pirate', text: 'Arrr! {brand} tried to scam me, but I\'m an AdPiratin! ⚔️', color: 'from-[#1e90ff] to-cyan-400' },
-  { id: 'dsa', text: 'DSA 2025 says NO to {brand}\'s misleading ads! 🛡️', color: 'from-purple-500 to-pink-500' }
+  { id: 'dsa', text: 'DSA 2025 says NO to {brand}\'s misleading ads! 🛡️', color: 'from-purple-500 to-pink-500' },
+  { id: 'busted_deal', text: '🚨 BUSTED FAKE DEAL! {brand} caught red-handed! 🏴‍☠️', color: 'from-red-600 to-rose-500' },
+  { id: 'saved_today', text: 'Saved €{percent} today! 💰 {brand} didn\'t fool this pirate!', color: 'from-emerald-500 to-teal-500' },
+  { id: 'fair_prices', text: 'Arrr, fair prices! ⚓ No {type} from {brand}. Walk the plank!', color: 'from-[#d4af37] to-amber-600' }
 ];
 
 const VIOLATION_TYPES = ['fake discount', 'greenwashing', 'hidden fees', 'dark pattern', 'fake reviews'];

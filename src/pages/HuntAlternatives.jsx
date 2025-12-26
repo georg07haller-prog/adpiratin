@@ -6,7 +6,7 @@ import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, ArrowLeft, Coins, Sparkles, ExternalLink,
-  TrendingDown, Star, Shield, Loader2, Tag
+  TrendingDown, Star, Shield, Loader2, Tag, Copy
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,6 +18,7 @@ export default function HuntAlternatives() {
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState(null);
   const [searching, setSearching] = useState(false);
+  const [provider, setProvider] = useState('Google Shopping');
   
   const queryClient = useQueryClient();
 
@@ -34,73 +35,79 @@ export default function HuntAlternatives() {
   const searchMutation = useMutation({
     mutationFn: async (query) => {
       setSearching(true);
+      const providers = ['Google Shopping', 'Idealo.de', 'Klarna Price Comparison'];
       
-      // Use LLM to find alternatives (simulated product search)
-      const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are a price comparison assistant. The user is looking for alternatives to: "${query}"
-        
+      for (let i = 0; i < providers.length; i++) {
+        try {
+          setProvider(providers[i]);
+          const response = await base44.integrations.Core.InvokeLLM({
+            prompt: `Using ${providers[i]}, find 5 cheaper alternatives for: "${query}"
+            
 Generate 5 realistic product alternatives with different price points. For each product include:
 - name: Product name
-- brand: Brand name
+- brand: Brand name  
 - price: Price in EUR (number)
 - original_price: Higher original price (to show savings)
 - rating: Rating out of 5
 - reviews: Number of reviews
-- savings_percent: Percentage saved
+- savings: How much € saved
 - eco_score: Eco rating A/B/C/D
 - features: Array of 2-3 key features
+- in_stock: boolean
+- url: realistic EU retailer URL
 
 Make the prices realistic for the EU market. Include a mix of budget and premium options.`,
-        response_json_schema: {
-          type: 'object',
-          properties: {
-            alternatives: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  name: { type: 'string' },
-                  brand: { type: 'string' },
-                  price: { type: 'number' },
-                  original_price: { type: 'number' },
-                  rating: { type: 'number' },
-                  reviews: { type: 'number' },
-                  savings_percent: { type: 'number' },
-                  eco_score: { type: 'string' },
-                  features: { type: 'array', items: { type: 'string' } }
-                }
+            response_json_schema: {
+              type: 'object',
+              properties: {
+                alternatives: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      name: { type: 'string' },
+                      brand: { type: 'string' },
+                      price: { type: 'number' },
+                      original_price: { type: 'number' },
+                      rating: { type: 'number' },
+                      reviews: { type: 'number' },
+                      savings: { type: 'number' },
+                      eco_score: { type: 'string' },
+                      features: { type: 'array', items: { type: 'string' } },
+                      in_stock: { type: 'boolean' },
+                      url: { type: 'string' }
+                    }
+                  }
+                },
+                search_tip: { type: 'string' }
               }
-            },
-            search_tip: { type: 'string' }
-          }
+            }
+          });
+          return response;
+        } catch (error) {
+          if (i === providers.length - 1) throw error;
+          await new Promise(r => setTimeout(r, 500));
         }
-      });
-      
-      return response;
+      }
     },
     onSuccess: async (data) => {
       setResults(data);
       setSearching(false);
       
-      // Award points for searching
       if (pirateProfile?.[0]) {
         await base44.entities.PirateUser.update(pirateProfile[0].id, {
           alternatives_found: (pirateProfile[0].alternatives_found || 0) + 1,
-          total_points: (pirateProfile[0].total_points || 0) + 10
+          total_points: (pirateProfile[0].total_points || 0) + 15
         });
         queryClient.invalidateQueries(['pirateProfile']);
       }
     },
-    onError: () => {
-      setSearching(false);
-    }
+    onError: () => setSearching(false)
   });
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      searchMutation.mutate(searchQuery);
-    }
+    if (searchQuery.trim()) searchMutation.mutate(searchQuery);
   };
 
   const getEcoColor = (score) => {
@@ -116,12 +123,7 @@ Make the prices realistic for the EU market. Include a mix of budget and premium
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0a1628] via-[#0f2137] to-[#0a1628] p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <motion.div 
-          className="flex items-center gap-4 mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
+        <motion.div className="flex items-center gap-4 mb-8" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
           <Link to={createPageUrl('Dashboard')}>
             <Button variant="ghost" className="text-[#8ba3c7] hover:text-white hover:bg-[#1a2d4a]">
               <ArrowLeft className="w-5 h-5" />
@@ -129,23 +131,18 @@ Make the prices realistic for the EU market. Include a mix of budget and premium
           </Link>
           <div>
             <h1 className="text-2xl font-black text-white">Hunt Better Deals</h1>
-            <p className="text-[#8ba3c7] text-sm">Find cheaper alternatives to overpriced products</p>
+            <p className="text-[#8ba3c7] text-sm">Find cheaper alternatives across EU retailers</p>
           </div>
         </motion.div>
 
-        {/* Search Box */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
           <Card className="bg-[#1a2d4a]/50 backdrop-blur-xl border-[#2a4a6a]/50 mb-6">
             <CardContent className="p-6">
               <form onSubmit={handleSearch} className="flex gap-3">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#5a7a9a]" />
                   <Input 
-                    placeholder="Enter product name, brand, or paste ad URL..."
+                    placeholder="Enter product name or paste ad URL..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10 bg-[#0a1628] border-[#2a4a6a] text-white placeholder:text-[#5a7a9a] h-12"
@@ -156,126 +153,111 @@ Make the prices realistic for the EU market. Include a mix of budget and premium
                   disabled={searching || !searchQuery.trim()}
                   className="bg-gradient-to-r from-[#1e90ff] to-cyan-400 text-white font-bold hover:opacity-90 h-12 px-6"
                 >
-                  {searching ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <>
-                      <Search className="w-4 h-4 mr-2" />
-                      Hunt
-                    </>
-                  )}
+                  {searching ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Search className="w-4 h-4 mr-2" />Hunt</>}
                 </Button>
               </form>
-              
               <div className="flex items-center gap-2 mt-3">
                 <Sparkles className="w-4 h-4 text-[#d4af37]" />
-                <span className="text-[#d4af37] text-sm">+10 Pirate Points per search</span>
+                <span className="text-[#d4af37] text-sm">+15 Pirate Points per search</span>
               </div>
             </CardContent>
           </Card>
         </motion.div>
 
-        {/* Loading State */}
         <AnimatePresence>
           {searching && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="text-center py-12"
-            >
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-                className="w-16 h-16 mx-auto mb-4"
-              >
-                <Search className="w-16 h-16 text-[#1e90ff]" />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center py-12">
+              <motion.div animate={{ rotate: 360 }} transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }} className="w-20 h-20 mx-auto mb-4">
+                <svg viewBox="0 0 100 100" className="w-20 h-20">
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="url(#grad)" strokeWidth="3" />
+                  <path d="M50 10 L55 20 L50 15 L45 20 Z" fill="#d4af37" />
+                  <circle cx="50" cy="50" r="8" fill="#d4af37" />
+                  <defs>
+                    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#d4af37" />
+                      <stop offset="100%" stopColor="#ffd700" />
+                    </linearGradient>
+                  </defs>
+                </svg>
               </motion.div>
-              <p className="text-white font-semibold">Scanning the seven seas for deals...</p>
-              <p className="text-[#8ba3c7] text-sm mt-1">Comparing prices across EU retailers</p>
+              <p className="text-white font-semibold text-lg">⚓ Hunting deals via {provider}...</p>
+              <p className="text-[#8ba3c7] text-sm mt-1">Scanning multiple providers</p>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Results */}
         <AnimatePresence>
           {results && !searching && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-            >
-              {/* Tip */}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               {results.search_tip && (
                 <div className="bg-[#1e90ff]/10 border border-[#1e90ff]/30 rounded-xl p-4 mb-6">
-                  <p className="text-[#1e90ff] text-sm">
-                    💡 {results.search_tip}
-                  </p>
+                  <p className="text-[#1e90ff] text-sm">💡 {results.search_tip}</p>
                 </div>
               )}
 
-              {/* Products Grid */}
               <div className="grid gap-4">
                 {results.alternatives?.map((product, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.1 }}
-                  >
-                    <Card className="bg-[#1a2d4a]/50 backdrop-blur-xl border-[#2a4a6a]/50 hover:border-[#d4af37]/30 transition-all">
-                      <CardContent className="p-5">
-                        <div className="flex flex-col md:flex-row md:items-center gap-4">
-                          {/* Product Image Placeholder */}
-                          <div className="w-20 h-20 bg-gradient-to-br from-[#2a4a6a] to-[#1a2d4a] rounded-xl flex items-center justify-center shrink-0">
-                            <Tag className="w-8 h-8 text-[#5a7a9a]" />
-                          </div>
-                          
-                          {/* Product Info */}
-                          <div className="flex-1">
-                            <div className="flex items-start justify-between gap-4">
-                              <div>
-                                <p className="text-[#8ba3c7] text-xs">{product.brand}</p>
-                                <h3 className="text-white font-bold">{product.name}</h3>
-                                <div className="flex items-center gap-2 mt-1">
-                                  <div className="flex items-center">
-                                    <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                                    <span className="text-white text-sm ml-1">{product.rating}</span>
-                                  </div>
-                                  <span className="text-[#5a7a9a] text-sm">({product.reviews} reviews)</span>
-                                </div>
-                              </div>
-                              
-                              {/* Price */}
-                              <div className="text-right">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-[#5a7a9a] line-through text-sm">€{product.original_price}</span>
-                                  <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
-                                    -{product.savings_percent}%
-                                  </Badge>
-                                </div>
-                                <p className="text-2xl font-black text-white">€{product.price}</p>
-                              </div>
+                  <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
+                    <Card className="bg-gradient-to-br from-[#1a2d4a]/80 to-[#0f2137]/60 backdrop-blur-xl border-[#d4af37]/20 hover:border-[#d4af37]/50 transition-all overflow-hidden group">
+                      <CardContent className="p-6">
+                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                          <div className="flex-1 space-y-3">
+                            <div className="flex items-start justify-between gap-3">
+                              <h3 className="text-white font-bold text-xl leading-tight group-hover:text-[#d4af37] transition-colors">{product.name}</h3>
+                              {product.in_stock === false && <Badge className="bg-red-500/20 text-red-400 shrink-0">Out of Stock</Badge>}
                             </div>
                             
-                            {/* Features & Eco Score */}
-                            <div className="flex flex-wrap items-center gap-2 mt-3">
-                              <Badge className={getEcoColor(product.eco_score)}>
-                                Eco: {product.eco_score}
-                              </Badge>
-                              {product.features?.map((feature, fi) => (
-                                <Badge key={fi} variant="outline" className="border-[#2a4a6a] text-[#8ba3c7]">
-                                  {feature}
-                                </Badge>
-                              ))}
+                            <div className="flex flex-wrap items-center gap-2">
+                              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#1e90ff]/10 border border-[#1e90ff]/30">
+                                <div className="w-5 h-5 rounded bg-[#1e90ff]/20 flex items-center justify-center">
+                                  <span className="text-[#1e90ff] text-xs">🏪</span>
+                                </div>
+                                <span className="text-[#1e90ff] font-medium text-sm">{product.brand}</span>
+                              </div>
+                              
+                              <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[#d4af37]/10">
+                                {[...Array(5)].map((_, j) => (
+                                  <Star key={j} className={`w-3.5 h-3.5 ${j < Math.floor(product.rating) ? 'fill-[#d4af37] text-[#d4af37]' : 'text-[#2a4a6a]'}`} />
+                                ))}
+                                <span className="text-[#d4af37] text-sm font-semibold ml-1">{product.rating.toFixed(1)}</span>
+                              </div>
+                              
+                              <Badge className={getEcoColor(product.eco_score)}>🌱 {product.eco_score}</Badge>
+                            </div>
+                            
+                            <div className="flex items-end gap-4">
+                              <div>
+                                {product.original_price > product.price && (
+                                  <p className="text-[#5a7a9a] line-through text-sm mb-1">€{product.original_price.toFixed(2)}</p>
+                                )}
+                                <p className="text-white text-3xl font-black">€{product.price.toFixed(2)}</p>
+                              </div>
+                              {product.savings > 0 && (
+                                <div className="px-3 py-2 rounded-xl bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30">
+                                  <div className="flex items-center gap-2">
+                                    <TrendingDown className="w-5 h-5 text-green-400" />
+                                    <div>
+                                      <p className="text-green-400 font-black text-lg leading-none">€{product.savings.toFixed(2)}</p>
+                                      <p className="text-green-400/70 text-xs">saved</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </div>
                           
-                          {/* Action */}
-                          <Button className="bg-gradient-to-r from-[#d4af37] to-[#b8962e] text-[#0a1628] font-bold hover:opacity-90 shrink-0">
-                            View Deal
-                            <ExternalLink className="w-4 h-4 ml-2" />
-                          </Button>
+                          <div className="flex flex-col gap-2 lg:w-48">
+                            <a href={product.url} target="_blank" rel="noopener noreferrer" className="w-full">
+                              <Button className="bg-gradient-to-r from-[#d4af37] to-[#ffd700] text-[#0a1628] font-bold hover:opacity-90 w-full shadow-lg">
+                                <ExternalLink className="w-4 h-4 mr-2" />
+                                Open in Tab
+                              </Button>
+                            </a>
+                            <Button variant="outline" className="border-[#2a4a6a] text-[#8ba3c7] hover:bg-[#1a2d4a] hover:text-white w-full" onClick={() => navigator.clipboard.writeText(product.url)}>
+                              <Copy className="w-4 h-4 mr-2" />
+                              Copy Link
+                            </Button>
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
@@ -283,37 +265,23 @@ Make the prices realistic for the EU market. Include a mix of budget and premium
                 ))}
               </div>
 
-              {/* DSA Notice */}
               <div className="mt-6 p-4 bg-[#0a1628]/50 rounded-xl border border-[#2a4a6a]/30">
                 <div className="flex items-start gap-3">
                   <Shield className="w-5 h-5 text-[#1e90ff] shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-[#8ba3c7] text-sm">
-                      <strong className="text-white">DSA 2025 Notice:</strong> Under EU Digital Services Act, 
-                      retailers must show the lowest price from the past 30 days when displaying a discount.
-                      Prices shown here are estimates and may vary by retailer.
-                    </p>
-                  </div>
+                  <p className="text-[#8ba3c7] text-sm"><strong className="text-white">DSA 2025:</strong> Retailers must show lowest 30-day price with discounts. Estimates may vary.</p>
                 </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Empty State */}
         {!results && !searching && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-12"
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12">
             <div className="w-20 h-20 mx-auto mb-4 bg-[#1a2d4a] rounded-full flex items-center justify-center">
               <TrendingDown className="w-10 h-10 text-[#5a7a9a]" />
             </div>
             <h3 className="text-white font-semibold mb-2">Ready to Hunt!</h3>
-            <p className="text-[#8ba3c7] text-sm max-w-md mx-auto">
-              Enter a product name or paste an ad URL to find better deals and alternatives across EU retailers.
-            </p>
+            <p className="text-[#8ba3c7] text-sm max-w-md mx-auto">Enter a product name or paste an ad URL to find better deals across EU retailers.</p>
           </motion.div>
         )}
       </div>
