@@ -361,6 +361,16 @@ export default function Dashboard() {
           </Card>
         </motion.div>
       </div>
+
+      {/* Tutorial */}
+      <Tutorial 
+        isOpen={showTutorial} 
+        onClose={() => setShowTutorial(false)}
+        onComplete={() => {
+          setShowCoins(true);
+          setTimeout(() => setShowCoins(false), 3000);
+        }}
+      />
     </div>
   );
 }
