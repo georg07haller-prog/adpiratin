@@ -160,13 +160,13 @@ export default function Tutorial({ isOpen, onClose, onComplete }) {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className={`fixed z-[52] ${getCardPosition()} max-w-md mx-4`}
+            className={`fixed z-[52] ${getCardPosition()} max-w-sm mx-4`}
           >
             <Card className="bg-gradient-to-br from-[#1a2d4a] to-[#0f2137] border-[#d4af37] shadow-2xl overflow-hidden">
               {/* Top accent */}
               <div className="h-1 bg-gradient-to-r from-[#d4af37] to-[#ffd700]" />
 
-              <CardContent className="p-6">
+              <CardContent className="p-4">
                 {/* Close button */}
                 <Button
                   size="icon"
@@ -178,22 +178,22 @@ export default function Tutorial({ isOpen, onClose, onComplete }) {
                 </Button>
 
                 {/* Icon */}
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#d4af37] to-[#b8962e] flex items-center justify-center mb-4">
-                  <step.icon className="w-7 h-7 text-[#0a1628]" />
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#d4af37] to-[#b8962e] flex items-center justify-center mb-3">
+                  <step.icon className="w-6 h-6 text-[#0a1628]" />
                 </div>
 
                 {/* Content */}
-                <h3 className="text-white text-xl font-bold mb-2">{step.title}</h3>
-                <p className="text-[#c4d4e4] mb-4 leading-relaxed">{step.description}</p>
+                <h3 className="text-white text-lg font-bold mb-1.5">{step.title}</h3>
+                <p className="text-[#c4d4e4] text-sm mb-3 leading-snug">{step.description}</p>
 
                 {step.action && (
-                  <div className="bg-[#d4af37]/10 border border-[#d4af37]/30 rounded-lg p-3 mb-4">
-                    <p className="text-[#d4af37] text-sm font-medium">💡 {step.action}</p>
+                  <div className="bg-[#d4af37]/10 border border-[#d4af37]/30 rounded-lg p-2 mb-3">
+                    <p className="text-[#d4af37] text-xs font-medium">💡 {step.action}</p>
                   </div>
                 )}
 
                 {/* Progress */}
-                <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center gap-2 mb-3">
                   {TUTORIAL_STEPS.map((_, i) => (
                     <div
                       key={i}
@@ -242,7 +242,7 @@ export default function Tutorial({ isOpen, onClose, onComplete }) {
                 {currentStep < TUTORIAL_STEPS.length - 1 && (
                   <button
                     onClick={handleSkip}
-                    className="w-full text-center text-[#5a7a9a] hover:text-[#8ba3c7] text-sm mt-3 transition-colors"
+                    className="w-full text-center text-[#5a7a9a] hover:text-[#8ba3c7] text-xs mt-2 transition-colors"
                   >
                     Skip tutorial
                   </button>
