@@ -7,8 +7,8 @@ import { Card, CardContent } from '@/components/ui/card';
 const TUTORIAL_STEPS = [
   {
     id: 'welcome',
-    title: 'Welcome Aboard, Pirate! 🏴‍☠️',
-    description: 'Ready to learn how to hunt overpriced ads and earn rewards? This quick tour will show you the ropes!',
+    title: 'Welcome Aboard! 🏴‍☠️',
+    description: 'Learn to hunt overpriced ads and earn rewards!',
     icon: Sparkles,
     position: 'bottom-right',
     highlight: null
@@ -16,34 +16,34 @@ const TUTORIAL_STEPS = [
   {
     id: 'scan',
     title: 'Scan for Shady Ads',
-    description: 'Browse any website and our AI will automatically detect sponsored content, fake discounts, and dark patterns in real-time.',
+    description: 'Our AI detects fake discounts and dark patterns automatically.',
     icon: Eye,
     position: 'top-right',
     highlight: '.stats-card',
-    action: 'Look for the "Ads Killed" stat — that\'s how many you\'ve exposed!'
+    action: 'Check "Ads Killed" to see your progress!'
   },
   {
     id: 'actions',
     title: 'Choose Your Action',
-    description: 'When we spot a suspicious ad, you have 3 options: 🔍 Hunt for cheaper alternatives, 🔇 Kill (hide) the ad, or 🚨 BUST and report it to authorities.',
+    description: '🔍 Hunt cheaper alternatives, 🔇 Kill the ad, or 🚨 Report violations.',
     icon: Target,
     position: 'bottom-right',
     highlight: '.quick-actions',
-    action: 'Try clicking "Hunt Deals" or "Report Ad" to get started!'
+    action: 'Try "Hunt Deals" or "Report Ad"!'
   },
   {
     id: 'rewards',
-    title: 'Earn Pirate Points',
-    description: 'Every action earns you points! Report violations (+25-35 pts), find alternatives (+15 pts), or kill ads (+5 pts). Climb ranks from Deck Swabber to Golden Galleon!',
+    title: 'Earn Points',
+    description: 'Report (+25 pts), Hunt (+15 pts), Kill (+5 pts). Climb ranks!',
     icon: Zap,
     position: 'bottom-right',
     highlight: '.pirate-profile',
-    action: 'Your points are shown at the top. Complete actions to level up!'
+    action: 'Points shown at top — level up!'
   },
   {
     id: 'complete',
-    title: 'You\'re Ready to Sail! ⚓',
-    description: 'That\'s all you need to know. Now go forth and plunder those overpriced ads! Fair winds, fair prices!',
+    title: 'Ready to Sail! ⚓',
+    description: 'Now go hunt those overpriced ads! Fair winds, fair prices!',
     icon: Sparkles,
     position: 'bottom-right',
     highlight: null
