@@ -10,7 +10,7 @@ const TUTORIAL_STEPS = [
     title: 'Welcome Aboard, Pirate! 🏴‍☠️',
     description: 'Ready to learn how to hunt overpriced ads and earn rewards? This quick tour will show you the ropes!',
     icon: Sparkles,
-    position: 'center',
+    position: 'bottom-right',
     highlight: null
   },
   {
@@ -27,7 +27,7 @@ const TUTORIAL_STEPS = [
     title: 'Choose Your Action',
     description: 'When we spot a suspicious ad, you have 3 options: 🔍 Hunt for cheaper alternatives, 🔇 Kill (hide) the ad, or 🚨 BUST and report it to authorities.',
     icon: Target,
-    position: 'center',
+    position: 'bottom-right',
     highlight: '.quick-actions',
     action: 'Try clicking "Hunt Deals" or "Report Ad" to get started!'
   },
@@ -45,7 +45,7 @@ const TUTORIAL_STEPS = [
     title: 'You\'re Ready to Sail! ⚓',
     description: 'That\'s all you need to know. Now go forth and plunder those overpriced ads! Fair winds, fair prices!',
     icon: Sparkles,
-    position: 'center',
+    position: 'bottom-right',
     highlight: null
   }
 ];
