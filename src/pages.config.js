@@ -1,29 +1,33 @@
+import AdminPanel from './pages/AdminPanel';
+import DSAGuide from './pages/DSAGuide';
 import Dashboard from './pages/Dashboard';
-import ReportAd from './pages/ReportAd';
+import ExtensionDemo from './pages/ExtensionDemo';
+import Home from './pages/Home';
 import HuntAlternatives from './pages/HuntAlternatives';
+import IndiegogoPage from './pages/IndiegogoPage';
+import Landing from './pages/Landing';
 import Leaderboard from './pages/Leaderboard';
 import MemeGenerator from './pages/MemeGenerator';
-import DSAGuide from './pages/DSAGuide';
-import AdminPanel from './pages/AdminPanel';
 import MobilePreview from './pages/MobilePreview';
-import IndiegogoPage from './pages/IndiegogoPage';
-import ExtensionDemo from './pages/ExtensionDemo';
-import Landing from './pages/Landing';
+import ReportAd from './pages/ReportAd';
+import NovaLibertalia from './pages/NovaLibertalia';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "AdminPanel": AdminPanel,
+    "DSAGuide": DSAGuide,
     "Dashboard": Dashboard,
-    "ReportAd": ReportAd,
+    "ExtensionDemo": ExtensionDemo,
+    "Home": Home,
     "HuntAlternatives": HuntAlternatives,
+    "IndiegogoPage": IndiegogoPage,
+    "Landing": Landing,
     "Leaderboard": Leaderboard,
     "MemeGenerator": MemeGenerator,
-    "DSAGuide": DSAGuide,
-    "AdminPanel": AdminPanel,
     "MobilePreview": MobilePreview,
-    "IndiegogoPage": IndiegogoPage,
-    "ExtensionDemo": ExtensionDemo,
-    "Landing": Landing,
+    "ReportAd": ReportAd,
+    "NovaLibertalia": NovaLibertalia,
 }
 
 export const pagesConfig = {

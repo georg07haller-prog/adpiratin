@@ -5,7 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Skull, Home, AlertTriangle, Search, Trophy, Share2, 
-  BookOpen, Shield, Menu, X, LogOut, User, Coins, Smartphone
+  BookOpen, Shield, Menu, X, LogOut, User, Coins, Smartphone, Ship
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { name: 'Hunt Deals', icon: Search, page: 'HuntAlternatives' },
   { name: 'Leaderboard', icon: Trophy, page: 'Leaderboard' },
   { name: 'Meme Gen', icon: Share2, page: 'MemeGenerator' },
+  { name: 'NovaLibertalia', icon: Ship, page: 'NovaLibertalia', special: true },
   { name: 'DSA Guide', icon: BookOpen, page: 'DSAGuide' },
   { name: 'Extension Demo', icon: Shield, page: 'ExtensionDemo' },
   { name: 'Mobile App', icon: Smartphone, page: 'MobilePreview' },
@@ -69,13 +70,24 @@ export default function Layout({ children, currentPageName }) {
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                     isActive 
                       ? 'bg-gradient-to-r from-[#d4af37]/20 to-[#d4af37]/5 border border-[#d4af37]/30 text-white' 
-                      : 'text-[#8ba3c7] hover:bg-[#1a2d4a]/50 hover:text-white'
+                      : item.special
+                        ? 'bg-gradient-to-r from-[#1e90ff]/10 to-purple-500/10 border border-[#1e90ff]/20 text-[#1e90ff] hover:border-[#1e90ff]/40'
+                        : 'text-[#8ba3c7] hover:bg-[#1a2d4a]/50 hover:text-white'
                   }`}
                   whileHover={{ x: 4 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <item.icon className={`w-5 h-5 ${isActive ? 'text-[#d4af37]' : ''}`} />
+                  <item.icon className={`w-5 h-5 ${isActive ? 'text-[#d4af37]' : item.special ? 'text-[#d4af37]' : ''}`} />
                   <span className="font-medium">{item.name}</span>
+                  {item.special && !isActive && (
+                    <motion.span
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="ml-auto text-xs"
+                    >
+                      ✨
+                    </motion.span>
+                  )}
                 </motion.div>
               </Link>
             );

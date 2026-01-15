@@ -21,9 +21,14 @@ const MEME_TEMPLATES = [
   { id: 'found', text: 'Found a better deal than {brand}! Save {percent}%! 💰', color: 'from-green-500 to-emerald-500' },
   { id: 'pirate', text: 'Arrr! {brand} tried to scam me, but I\'m an AdPiratin! ⚔️', color: 'from-[#1e90ff] to-cyan-400' },
   { id: 'dsa', text: 'DSA 2025 says NO to {brand}\'s misleading ads! 🛡️', color: 'from-purple-500 to-pink-500' },
-  { id: 'busted_deal', text: '🚨 BUSTED FAKE DEAL! {brand} caught red-handed! 🏴‍☠️', color: 'from-red-600 to-rose-500' },
-  { id: 'saved_today', text: 'Saved €{percent} today! 💰 {brand} didn\'t fool this pirate!', color: 'from-emerald-500 to-teal-500' },
-  { id: 'fair_prices', text: 'Arrr, fair prices! ⚓ No {type} from {brand}. Walk the plank!', color: 'from-[#d4af37] to-amber-600' }
+  { id: 'busted_deal', text: '🚨 BUSTED FAKE ECO-DEAL! {brand} caught greenwashing! 🌱❌', color: 'from-red-600 to-rose-500' },
+  { id: 'saved_bier', text: 'Saved €{percent}! Time for Bier! 🍺 Thanks AdPiratin! ⚓', color: 'from-amber-500 to-yellow-600' },
+  { id: 'lies_lose', text: 'Ads lie, AdPiratin wins! 🏴‍☠️ {brand} walked the plank!', color: 'from-indigo-500 to-purple-600' },
+  { id: 'eco_fraud', text: 'Fake eco-claims from {brand}! 🌍❌ Real pirates demand truth!', color: 'from-green-600 to-teal-600' },
+  { id: 'dsa_guardian', text: 'DSA Guardian here! ⚔️ {brand}\'s {type} = REJECTED!', color: 'from-[#1e90ff] to-cyan-500' },
+  { id: 'treasure_saved', text: 'Yo-ho! €{percent} treasure saved! {brand} tried to plunder me! 💰⚓', color: 'from-[#d4af37] to-amber-600' },
+  { id: 'no_scam', text: 'Not today, {brand}! This pirate knows the DSA! 📜🏴‍☠️', color: 'from-purple-500 to-pink-500' },
+  { id: 'honest_only', text: 'Fair winds demand fair prices! ⛵ {brand}\'s lies detected!', color: 'from-cyan-500 to-blue-600' }
 ];
 
 const VIOLATION_TYPES = ['fake discount', 'greenwashing', 'hidden fees', 'dark pattern', 'fake reviews'];

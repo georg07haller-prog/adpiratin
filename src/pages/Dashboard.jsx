@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Skull, Target, Eye, EyeOff, AlertTriangle, Search, 
   Trophy, Coins, Anchor, Ship, Sparkles, Share2, ChevronRight,
-  Shield, Zap, Crown, HelpCircle
+  Shield, Zap, Crown, HelpCircle, TrendingDown, Wallet
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -43,6 +43,15 @@ export default function Dashboard() {
       setTimeout(() => setShowTutorial(true), 1000);
     }
   }, []);
+
+  // Get savings from localStorage
+  const getSavingsData = () => {
+    const savings = localStorage.getItem('adpiratin_savings');
+    if (!savings) return { week: 0, month: 0, total: 0 };
+    return JSON.parse(savings);
+  };
+
+  const [savingsData, setSavingsData] = useState(getSavingsData());
 
   const { data: pirateProfile, isLoading: profileLoading } = useQuery({
     queryKey: ['pirateProfile', user?.email],
@@ -272,6 +281,62 @@ export default function Dashboard() {
           className="mb-6 quick-actions"
         >
           <QuickActions />
+        </motion.div>
+
+        {/* Savings Tracker */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.65 }}
+          className="mb-6"
+        >
+          <Card className="bg-gradient-to-r from-emerald-500/10 to-teal-500/10 backdrop-blur-xl border-emerald-500/30 overflow-hidden">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-emerald-400/10 to-transparent" />
+            <CardContent className="p-6 relative">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-3 bg-emerald-500/20 rounded-xl">
+                  <Wallet className="w-6 h-6 text-emerald-400" />
+                </div>
+                <div>
+                  <h3 className="text-white font-bold text-lg">Your Savings Tracker</h3>
+                  <p className="text-emerald-400 text-sm">Money saved by hunting deals</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center p-3 bg-[#0a1628]/30 rounded-xl">
+                  <p className="text-2xl font-black text-emerald-400">€{savingsData.week.toFixed(2)}</p>
+                  <p className="text-[#8ba3c7] text-xs mt-1">This Week</p>
+                </div>
+                <div className="text-center p-3 bg-[#0a1628]/30 rounded-xl">
+                  <p className="text-2xl font-black text-emerald-400">€{savingsData.month.toFixed(2)}</p>
+                  <p className="text-[#8ba3c7] text-xs mt-1">This Month</p>
+                </div>
+                <div className="text-center p-3 bg-[#0a1628]/30 rounded-xl">
+                  <p className="text-2xl font-black text-[#d4af37]">€{savingsData.total.toFixed(2)}</p>
+                  <p className="text-[#8ba3c7] text-xs mt-1">All Time</p>
+                </div>
+              </div>
+              {savingsData.total > 0 && (
+                <motion.div 
+                  className="mt-4 flex items-center justify-center gap-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  {[...Array(Math.min(Math.floor(savingsData.total / 20), 10))].map((_, i) => (
+                    <motion.span
+                      key={i}
+                      initial={{ scale: 0, rotate: -180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ delay: i * 0.1 }}
+                      className="text-2xl"
+                    >
+                      💰
+                    </motion.span>
+                  ))}
+                </motion.div>
+              )}
+            </CardContent>
+          </Card>
         </motion.div>
 
         {/* Two Column Layout */}

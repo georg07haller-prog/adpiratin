@@ -6,12 +6,13 @@ import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, ArrowLeft, Coins, Sparkles, ExternalLink,
-  TrendingDown, Star, Shield, Loader2, Tag, Copy
+  TrendingDown, Star, Shield, Loader2, Tag, Copy, Leaf
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import VoiceCommands from '@/components/VoiceCommands';
 
 export default function HuntAlternatives() {
   const [user, setUser] = useState(null);
@@ -52,6 +53,7 @@ Generate 5 realistic product alternatives with different price points. For each 
 - reviews: Number of reviews
 - savings: How much € saved
 - eco_score: Eco rating A/B/C/D
+- eco_co2_saved: Estimated CO2 saved in kg (rough estimate based on shipping/production)
 - features: Array of 2-3 key features
 - in_stock: boolean
 - url: realistic EU retailer URL
@@ -73,6 +75,7 @@ Make the prices realistic for the EU market. Include a mix of budget and premium
                       reviews: { type: 'number' },
                       savings: { type: 'number' },
                       eco_score: { type: 'string' },
+                      eco_co2_saved: { type: 'number' },
                       features: { type: 'array', items: { type: 'string' } },
                       in_stock: { type: 'boolean' },
                       url: { type: 'string' }
@@ -94,6 +97,16 @@ Make the prices realistic for the EU market. Include a mix of budget and premium
       setResults(data);
       setSearching(false);
       
+      // Track savings in localStorage
+      const totalSaved = data.alternatives?.reduce((sum, alt) => sum + (alt.savings || 0), 0) || 0;
+      if (totalSaved > 0) {
+        const savings = JSON.parse(localStorage.getItem('adpiratin_savings') || '{"week":0,"month":0,"total":0}');
+        savings.week += totalSaved;
+        savings.month += totalSaved;
+        savings.total += totalSaved;
+        localStorage.setItem('adpiratin_savings', JSON.stringify(savings));
+      }
+      
       if (pirateProfile?.[0]) {
         await base44.entities.PirateUser.update(pirateProfile[0].id, {
           alternatives_found: (pirateProfile[0].alternatives_found || 0) + 1,
@@ -104,6 +117,12 @@ Make the prices realistic for the EU market. Include a mix of budget and premium
     },
     onError: () => setSearching(false)
   });
+
+  const handleVoiceCommand = (command) => {
+    if (command === 'hunt' && searchQuery.trim()) {
+      searchMutation.mutate(searchQuery);
+    }
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -223,6 +242,13 @@ Make the prices realistic for the EU market. Include a mix of budget and premium
                               </div>
                               
                               <Badge className={getEcoColor(product.eco_score)}>🌱 {product.eco_score}</Badge>
+                              
+                              {product.eco_co2_saved > 0 && (
+                                <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-green-500/10 border border-green-500/30" title="Estimated CO₂ saved vs standard shipping/production">
+                                  <Leaf className="w-3.5 h-3.5 text-green-400" />
+                                  <span className="text-green-400 text-xs font-medium">~{product.eco_co2_saved.toFixed(1)} kg CO₂</span>
+                                </div>
+                              )}
                             </div>
                             
                             <div className="flex items-end gap-4">
@@ -284,6 +310,11 @@ Make the prices realistic for the EU market. Include a mix of budget and premium
             <p className="text-[#8ba3c7] text-sm max-w-md mx-auto">Enter a product name or paste an ad URL to find better deals across EU retailers.</p>
           </motion.div>
         )}
+      </div>
+
+      {/* Voice Commands Floating Button */}
+      <div className="fixed bottom-8 right-8 z-50">
+        <VoiceCommands onCommand={handleVoiceCommand} />
       </div>
     </div>
   );
