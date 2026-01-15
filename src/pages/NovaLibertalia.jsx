@@ -21,19 +21,19 @@ const FEATURES = [
     icon: MessageSquare,
     title: 'Pirate Tavern',
     description: 'Private chat for successful pirates. Share strategies, coordinate reports, plan bounties.',
-    status: 'Coming Q3 2025'
+    status: 'Coming Q2 2026'
   },
   {
     icon: Crown,
     title: 'King Election',
     description: 'Vote for Pirate King monthly. Kings get exclusive perks and influence platform decisions.',
-    status: 'Coming Q4 2025'
+    status: 'Coming Q3 2026'
   },
   {
     icon: Coins,
     title: 'Doubloon Token',
     description: 'Blockchain currency for NovaLibertalia. Earn, trade, redeem for real-world perks.',
-    status: 'Whitepaper Q3 2025'
+    status: 'Whitepaper Q2 2026'
   },
   {
     icon: Gift,
@@ -228,10 +228,10 @@ export default function NovaLibertalia() {
             <CardContent>
               <div className="space-y-4">
                 {[
-                  { quarter: 'Q2 2025', milestone: 'Beta launch — First 100 pirates get founding member status', status: 'In Progress' },
-                  { quarter: 'Q3 2025', milestone: 'Tavern opens — Community chat & Doubloon whitepaper released', status: 'Planned' },
-                  { quarter: 'Q4 2025', milestone: 'King Election — First Pirate King crowned, governance begins', status: 'Planned' },
-                  { quarter: 'Q1 2026', milestone: 'Doubloon launch — Token trading, real-world perks unlocked', status: 'Vision' }
+                  { quarter: 'Q1 2026', milestone: 'Beta launch — First 100 pirates get founding member status', status: 'In Progress' },
+                  { quarter: 'Q2 2026', milestone: 'Tavern opens — Community chat & Doubloon whitepaper released', status: 'Planned' },
+                  { quarter: 'Q3 2026', milestone: 'King Election — First Pirate King crowned, governance begins', status: 'Planned' },
+                  { quarter: 'Q4 2026', milestone: 'Doubloon launch — Token trading, real-world perks unlocked', status: 'Vision' }
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-[#0a1628]/30 border border-[#2a4a6a]/30">
                     <div className="shrink-0">
