@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -7,12 +7,19 @@ import { motion } from 'framer-motion';
 import { 
   ArrowLeft, Lock, Trophy, Users, Coins, Crown, 
   Ship, Anchor, Sparkles, MessageSquare, Vote,
-  Gift, Zap, Globe, Shield
+  Gift, Zap, Globe, Shield, ArrowRightLeft, ShoppingBag,
+  MapPin, Music, Landmark
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
+import Marketplace from '@/components/island/Marketplace';
+import IslandMap from '@/components/island/IslandMap';
+import Tavern from '@/components/island/Tavern';
+import AnthemPlayer from '@/components/island/AnthemPlayer';
 
 const ENTRY_THRESHOLD = 500;
 
@@ -57,6 +64,9 @@ const FEATURES = [
 
 export default function NovaLibertalia() {
   const [user, setUser] = useState(null);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [swapAmount, setSwapAmount] = useState('');
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
@@ -73,6 +83,90 @@ export default function NovaLibertalia() {
   const progressPercent = Math.min((currentPoints / ENTRY_THRESHOLD) * 100, 100);
   const pointsNeeded = Math.max(ENTRY_THRESHOLD - currentPoints, 0);
   const hasAccess = currentPoints >= ENTRY_THRESHOLD;
+
+  // Get Doubloons and purchases from localStorage
+  const getDoubloons = () => {
+    const data = localStorage.getItem('adpiratin_doubloons');
+    return data ? JSON.parse(data) : { balance: 0, purchases: [] };
+  };
+
+  const getTreasury = () => {
+    const treasury = localStorage.getItem('adpiratin_treasury');
+    return treasury ? parseFloat(treasury) : 0;
+  };
+
+  const [doubloonsData, setDoubloonsData] = useState(getDoubloons());
+  const [treasury, setTreasury] = useState(getTreasury());
+
+  const swapMutation = useMutation({
+    mutationFn: async (amount) => {
+      const pointsToSwap = parseInt(amount);
+      if (pointsToSwap > currentPoints) {
+        throw new Error('Not enough Pirate Points!');
+      }
+
+      // 2% fee
+      const fee = Math.ceil(pointsToSwap * 0.02);
+      const doubloonsReceived = pointsToSwap - fee;
+
+      // Update profile points
+      await base44.entities.PirateUser.update(profile.id, {
+        total_points: currentPoints - pointsToSwap
+      });
+
+      // Update doubloons
+      const newData = {
+        balance: doubloonsData.balance + doubloonsReceived,
+        purchases: doubloonsData.purchases
+      };
+      localStorage.setItem('adpiratin_doubloons', JSON.stringify(newData));
+      setDoubloonsData(newData);
+
+      // Update treasury
+      const newTreasury = treasury + fee;
+      localStorage.setItem('adpiratin_treasury', newTreasury.toString());
+      setTreasury(newTreasury);
+
+      return { doubloonsReceived, fee };
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(['pirateProfile']);
+      toast.success(`Swapped! Received ${data.doubloonsReceived} Doubloons (${data.fee} fee to Treasury)`);
+      setSwapAmount('');
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    }
+  });
+
+  const handlePurchase = (item, type) => {
+    const fee = Math.ceil(item.price * 0.01); // 1% fee
+    const newBalance = doubloonsData.balance - item.price;
+    
+    const newData = {
+      balance: newBalance,
+      purchases: [...doubloonsData.purchases, { ...item, type, date: Date.now() }]
+    };
+    localStorage.setItem('adpiratin_doubloons', JSON.stringify(newData));
+    setDoubloonsData(newData);
+
+    const newTreasury = treasury + fee;
+    localStorage.setItem('adpiratin_treasury', newTreasury.toString());
+    setTreasury(newTreasury);
+
+    toast.success(`Purchased ${item.name}! (${fee} Doubloons to Treasury)`);
+  };
+
+  const handleSwap = () => {
+    if (!swapAmount || parseInt(swapAmount) <= 0) {
+      toast.error('Enter a valid amount!');
+      return;
+    }
+    swapMutation.mutate(swapAmount);
+  };
+
+  const ownedVilla = doubloonsData.purchases.find(p => p.type === 'villas');
+  const ownedPlots = hasAccess ? ['5-5'] : []; // Center plot if has access
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0a1628] via-[#0f2137] to-[#0a1628] p-4 md:p-8">
@@ -151,16 +245,21 @@ export default function NovaLibertalia() {
               )}
 
               {hasAccess && (
-                <div className="grid md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+                <div className="grid md:grid-cols-4 gap-4 max-w-3xl mx-auto">
                   <div className="text-center p-4 bg-[#0a1628]/50 rounded-xl border border-[#d4af37]/20">
                     <Coins className="w-8 h-8 text-[#d4af37] mx-auto mb-2" />
-                    <p className="text-2xl font-black text-white">0 <span className="text-sm text-[#8ba3c7]">Doubloons</span></p>
-                    <p className="text-[#5a7a9a] text-xs mt-1">Coming Soon</p>
+                    <p className="text-2xl font-black text-white">{doubloonsData.balance}</p>
+                    <p className="text-[#5a7a9a] text-xs mt-1">Doubloons</p>
+                  </div>
+                  <div className="text-center p-4 bg-[#0a1628]/50 rounded-xl border border-emerald-500/20">
+                    <Landmark className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
+                    <p className="text-2xl font-black text-white">{treasury}</p>
+                    <p className="text-[#5a7a9a] text-xs mt-1">Island Treasury</p>
                   </div>
                   <div className="text-center p-4 bg-[#0a1628]/50 rounded-xl border border-[#1e90ff]/20">
                     <Trophy className="w-8 h-8 text-[#1e90ff] mx-auto mb-2" />
                     <p className="text-2xl font-black text-white">Elite</p>
-                    <p className="text-[#5a7a9a] text-xs mt-1">Member Status</p>
+                    <p className="text-[#5a7a9a] text-xs mt-1">Status</p>
                   </div>
                   <div className="text-center p-4 bg-[#0a1628]/50 rounded-xl border border-purple-500/20">
                     <Users className="w-8 h-8 text-purple-400 mx-auto mb-2" />
@@ -173,12 +272,108 @@ export default function NovaLibertalia() {
           </Card>
         </motion.div>
 
+        {/* Island Tabs (for access users) */}
+        {hasAccess && (
+          <div className="mb-8">
+            <div className="flex gap-2 mb-6 overflow-x-auto">
+              {[
+                { id: 'overview', label: 'Overview', icon: Globe },
+                { id: 'swap', label: 'Swap Points', icon: ArrowRightLeft },
+                { id: 'marketplace', label: 'Marketplace', icon: ShoppingBag },
+                { id: 'map', label: 'Island Map', icon: MapPin },
+                { id: 'tavern', label: 'Tavern', icon: MessageSquare },
+                { id: 'anthem', label: 'Anthem', icon: Music }
+              ].map((tab) => (
+                <Button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  variant={activeTab === tab.id ? 'default' : 'outline'}
+                  className={activeTab === tab.id 
+                    ? 'bg-gradient-to-r from-[#d4af37] to-[#b8962e] text-[#0a1628]'
+                    : 'border-[#2a4a6a] text-[#8ba3c7] hover:bg-[#1a2d4a]'
+                  }
+                >
+                  <tab.icon className="w-4 h-4 mr-2" />
+                  {tab.label}
+                </Button>
+              ))}
+            </div>
+
+            {/* Tab Content */}
+            {activeTab === 'swap' && (
+              <Card className="bg-[#1a2d4a]/50 backdrop-blur-xl border-[#2a4a6a]/50">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <ArrowRightLeft className="w-5 h-5 text-[#d4af37]" />
+                    Swap Points to Doubloons
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="max-w-md mx-auto">
+                    <div className="mb-4 p-4 bg-[#0a1628]/50 rounded-xl">
+                      <p className="text-[#8ba3c7] text-sm mb-2">Your Pirate Points</p>
+                      <p className="text-white text-3xl font-black">{currentPoints}</p>
+                    </div>
+                    <div className="flex gap-3 mb-4">
+                      <Input
+                        type="number"
+                        placeholder="Amount to swap..."
+                        value={swapAmount}
+                        onChange={(e) => setSwapAmount(e.target.value)}
+                        className="bg-[#0a1628] border-[#2a4a6a] text-white"
+                      />
+                      <Button
+                        onClick={handleSwap}
+                        disabled={swapMutation.isPending}
+                        className="bg-gradient-to-r from-[#1e90ff] to-cyan-400 text-white"
+                      >
+                        Swap (2% fee)
+                      </Button>
+                    </div>
+                    <div className="p-3 bg-[#1e90ff]/10 rounded-xl border border-[#1e90ff]/30">
+                      <p className="text-[#1e90ff] text-sm">
+                        ⚡ Ratio: 1 Point = 1 Doubloon (2% fee goes to Island Treasury)
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {activeTab === 'marketplace' && (
+              <Marketplace 
+                doubloonsBalance={doubloonsData.balance}
+                onPurchase={handlePurchase}
+              />
+            )}
+
+            {activeTab === 'map' && (
+              <IslandMap 
+                ownedPlots={ownedPlots}
+                villaSkin={ownedVilla?.id || 'classic'}
+              />
+            )}
+
+            {activeTab === 'tavern' && (
+              <Tavern 
+                username={profile?.pirate_name}
+                userRank={profile?.rank}
+              />
+            )}
+
+            {activeTab === 'anthem' && (
+              <AnthemPlayer />
+            )}
+          </div>
+        )}
+
         {/* Features Grid */}
-        <div className="mb-8">
-          <h3 className="text-xl font-black text-white mb-4 flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-[#d4af37]" />
-            What Awaits in NovaLibertalia
-          </h3>
+        {activeTab === 'overview' && (
+          <div className="mb-8">
+            <h3 className="text-xl font-black text-white mb-4 flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-[#d4af37]" />
+              {hasAccess ? 'Island Features' : 'What Awaits in NovaLibertalia'}
+            </h3>
           <div className="grid md:grid-cols-2 gap-4">
             {FEATURES.map((feature, i) => (
               <motion.div
@@ -210,9 +405,11 @@ export default function NovaLibertalia() {
               </motion.div>
             ))}
           </div>
-        </div>
+          </div>
+        )}
 
         {/* Roadmap Teaser */}
+        {activeTab === 'overview' && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

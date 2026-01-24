@@ -9,8 +9,8 @@ import Landing from './pages/Landing';
 import Leaderboard from './pages/Leaderboard';
 import MemeGenerator from './pages/MemeGenerator';
 import MobilePreview from './pages/MobilePreview';
-import ReportAd from './pages/ReportAd';
 import NovaLibertalia from './pages/NovaLibertalia';
+import ReportAd from './pages/ReportAd';
 import __Layout from './Layout.jsx';
 
 
@@ -26,8 +26,8 @@ export const PAGES = {
     "Leaderboard": Leaderboard,
     "MemeGenerator": MemeGenerator,
     "MobilePreview": MobilePreview,
-    "ReportAd": ReportAd,
     "NovaLibertalia": NovaLibertalia,
+    "ReportAd": ReportAd,
 }
 
 export const pagesConfig = {
