@@ -24,7 +24,7 @@ const ANTHEM_LYRICS = [
   { time: 45, line: 'We\'re busting fake deals, answering the calls!' },
   { time: 48, line: '⚓ [Chorus - Reprise]' },
   { time: 50, line: 'AdPiratin, hoist the black flag high!' },
-  { time: 53, line: 'Hunt for deals cheaper, better, eco-true!' },
+  { time: 53, line: 'Hunt for deals cheaper, better, eco-true,' },
   { time: 56, line: 'Arrr, plunder the ads, yo ho ho!' },
   { time: 59, line: 'With AdPiratin – fair winds we go!' },
   { time: 62, line: '💰 [Outro]' },
@@ -34,25 +34,22 @@ const ANTHEM_LYRICS = [
   { time: 73, line: 'Fair shopping ahead – together we endeavor! 🏴‍☠️' }
 ];
 
-// Anthem audio file
 const AUDIO_URL = 'https://base44.app/api/apps/6936fd0323c8bf22550d6bd3/files/public/6936fd0323c8bf22550d6bd3/a4d35c5e0_AdPiratinAnthem_PlundertheAds_.mp3';
 
 export default function AnthemPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [showAnimation, setShowAnimation] = useState(false);
+  const [showFireworks, setShowFireworks] = useState(false);
   const audioRef = useRef(null);
 
   useEffect(() => {
     if (AUDIO_URL && audioRef.current) {
-      // Use real audio if available
       if (isPlaying) {
         audioRef.current.play();
       } else {
         audioRef.current.pause();
       }
     } else if (isPlaying) {
-      // Fallback to timer simulation
       const interval = setInterval(() => {
         setCurrentTime(prev => prev + 1);
       }, 1000);
@@ -63,24 +60,30 @@ export default function AnthemPlayer() {
   useEffect(() => {
     if (currentTime >= 76) {
       setIsPlaying(false);
+      setShowFireworks(false);
       setCurrentTime(0);
     }
   }, [currentTime]);
 
   const togglePlay = () => {
-    setIsPlaying(!isPlaying);
-    setShowAnimation(!isPlaying);
-    if (!isPlaying) {
-      setCurrentTime(0);
-      if (audioRef.current) {
-        audioRef.current.currentTime = 0;
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setShowFireworks(false);
+      } else {
+        audioRef.current.play();
+        setShowFireworks(true);
       }
+      setIsPlaying(!isPlaying);
     } else {
-      setShowAnimation(false);
+      setIsPlaying(!isPlaying);
+      setShowFireworks(!isPlaying);
+      if (!isPlaying) {
+        setCurrentTime(0);
+      }
     }
   };
 
-  // Update time from real audio
   const handleTimeUpdate = () => {
     if (audioRef.current) {
       setCurrentTime(Math.floor(audioRef.current.currentTime));
@@ -89,7 +92,7 @@ export default function AnthemPlayer() {
 
   const handleAudioEnd = () => {
     setIsPlaying(false);
-    setShowAnimation(false);
+    setShowFireworks(false);
     setCurrentTime(0);
   };
 
@@ -100,7 +103,6 @@ export default function AnthemPlayer() {
 
   return (
     <div className="relative">
-      {/* Hidden Audio Element */}
       {AUDIO_URL && (
         <audio
           ref={audioRef}
@@ -110,75 +112,116 @@ export default function AnthemPlayer() {
         />
       )}
 
-      {/* Background Animation */}
+      {/* Pirate-themed background animations */}
       <AnimatePresence>
-        {showAnimation && (
-          <>
-            {/* Coins */}
-            <div className="fixed inset-0 pointer-events-none z-40">
-              {[...Array(15)].map((_, i) => (
-                <motion.div
-                  key={`coin-${i}`}
-                  className="absolute text-3xl"
-                  initial={{ 
-                    top: -50, 
-                    left: `${Math.random() * 100}%`,
-                    rotate: 0
-                  }}
-                  animate={{ 
-                    top: '110%',
-                    rotate: 360,
-                  }}
-                  transition={{ 
-                    duration: 4,
-                    delay: Math.random() * 2,
-                    repeat: Infinity
-                  }}
-                >
-                  🪙
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Ship */}
+        {showFireworks && (
+          <div className="fixed inset-0 pointer-events-none z-40 overflow-hidden">
+            {/* Floating treasure and pirate elements */}
+            {[...Array(20)].map((_, i) => (
+              <motion.div
+                key={`treasure-${i}`}
+                className="absolute text-4xl"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`
+                }}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ 
+                  opacity: [0, 1, 1, 0],
+                  scale: [0, 1.2, 1, 0],
+                  y: [0, -80],
+                  rotate: [0, 360]
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  delay: i * 0.2
+                }}
+              >
+                {['💎', '🪙', '⚓', '🏴‍☠️', '💰', '⛵', '🗡️', '🦜'][i % 8]}
+              </motion.div>
+            ))}
+            
+            {/* Sailing ship */}
             <motion.div
-              className="fixed bottom-0 left-0 text-8xl pointer-events-none z-40"
-              initial={{ x: '-100%' }}
-              animate={{ x: 'calc(100vw + 100%)' }}
-              transition={{ duration: 10, repeat: Infinity }}
+              className="absolute bottom-10 text-8xl"
+              initial={{ x: '-10%' }}
+              animate={{ x: '110vw' }}
+              transition={{ duration: 15, repeat: Infinity }}
             >
-              ⛵
+              🚢
             </motion.div>
-          </>
+          </div>
         )}
       </AnimatePresence>
 
-      {/* Player Card */}
-      <Card className="bg-gradient-to-br from-[#1a2d4a] to-[#0f2137] border-[#d4af37]/30 overflow-hidden">
+      {/* Karaoke Card */}
+      <Card className="bg-gradient-to-br from-[#1a2d4a] to-[#0f2137] border-[#d4af37]/30 overflow-hidden relative">
         <CardContent className="p-6">
           <div className="flex items-center gap-4 mb-6">
             <div className="p-3 bg-[#d4af37]/20 rounded-xl">
               <Music className="w-6 h-6 text-[#d4af37]" />
             </div>
             <div>
-              <h3 className="text-white font-bold">NovaLibertalia Anthem</h3>
-              <p className="text-[#8ba3c7] text-sm">The Official Pirate Song</p>
+              <h3 className="text-white font-bold text-lg">🎤 NovaLibertalia Karaoke</h3>
+              <p className="text-[#8ba3c7] text-sm">Sing along, matey!</p>
             </div>
           </div>
 
-          {/* Lyrics Display */}
-          <div className="bg-[#0a1628]/50 rounded-xl p-6 mb-6 min-h-[120px] flex items-center justify-center">
+          {/* Karaoke Lyrics Display */}
+          <div className="bg-black/40 rounded-xl p-8 mb-6 min-h-[180px] flex flex-col items-center justify-center backdrop-blur-sm border border-[#d4af37]/20">
             <AnimatePresence mode="wait">
-              <motion.p
+              <motion.div
                 key={getCurrentLyric()}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="text-white text-xl font-bold text-center"
+                initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -30, scale: 0.9 }}
+                transition={{ duration: 0.4 }}
+                className="text-center"
               >
-                {getCurrentLyric()}
-              </motion.p>
+                <motion.p 
+                  className="text-3xl md:text-5xl font-black leading-tight px-4 bg-gradient-to-r from-[#d4af37] via-[#ffd700] to-[#d4af37] bg-clip-text text-transparent"
+                  animate={{
+                    backgroundPosition: ['0%', '100%', '0%']
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity
+                  }}
+                  style={{
+                    backgroundSize: '200% 100%'
+                  }}
+                >
+                  {getCurrentLyric()}
+                </motion.p>
+                
+                {isPlaying && (
+                  <motion.div 
+                    className="mt-4 text-3xl"
+                    animate={{ 
+                      y: [0, -10, 0],
+                      rotate: [-5, 5, -5]
+                    }}
+                    transition={{ 
+                      duration: 0.8, 
+                      repeat: Infinity 
+                    }}
+                  >
+                    🏴‍☠️ ⚔️ 🏴‍☠️
+                  </motion.div>
+                )}
+              </motion.div>
             </AnimatePresence>
+            
+            {isPlaying && (
+              <motion.p
+                className="absolute bottom-4 text-[#8ba3c7] text-sm"
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                🎤 Sing loud and proud! 🎤
+              </motion.p>
+            )}
           </div>
 
           {/* Controls */}
@@ -192,7 +235,7 @@ export default function AnthemPlayer() {
 
             <Button
               onClick={togglePlay}
-              className="bg-gradient-to-r from-[#d4af37] to-[#b8962e] text-[#0a1628] font-bold px-8"
+              className="bg-gradient-to-r from-[#d4af37] to-[#b8962e] text-[#0a1628] font-bold px-8 hover:scale-105 transition-transform"
             >
               {isPlaying ? (
                 <>
@@ -202,7 +245,7 @@ export default function AnthemPlayer() {
               ) : (
                 <>
                   <Play className="w-5 h-5 mr-2" />
-                  Sing Along!
+                  Start Karaoke!
                 </>
               )}
             </Button>
@@ -213,17 +256,11 @@ export default function AnthemPlayer() {
           {/* Progress Bar */}
           <div className="mt-4 h-2 bg-[#0a1628]/50 rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-gradient-to-r from-[#d4af37] to-[#ffd700]"
+              className="h-full bg-gradient-to-r from-[#d4af37] via-[#ffd700] to-[#d4af37]"
               initial={{ width: 0 }}
               animate={{ width: `${(currentTime / 76) * 100}%` }}
             />
           </div>
-
-          {!AUDIO_URL && (
-            <p className="text-[#5a7a9a] text-xs text-center mt-3">
-              ℹ️ Без аудио — только текст и анимация. Загрузите MP3 для полного эффекта!
-            </p>
-          )}
         </CardContent>
       </Card>
     </div>
