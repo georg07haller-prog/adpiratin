@@ -5,7 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Skull, Home, AlertTriangle, Search, Trophy, Share2, 
-  BookOpen, Shield, Menu, X, LogOut, User, Coins, Smartphone, Ship
+  BookOpen, Shield, Menu, X, LogOut, User, Coins, Smartphone, Ship, Music
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
@@ -16,7 +16,7 @@ const NAV_ITEMS = [
   { name: 'Hunt Deals', icon: Search, page: 'HuntAlternatives' },
   { name: 'Leaderboard', icon: Trophy, page: 'Leaderboard' },
   { name: 'Meme Gen', icon: Share2, page: 'MemeGenerator' },
-  { name: 'Anthem', icon: Coins, page: 'AnthemPublic', special: true },
+  { name: 'Anthem', icon: Music, page: 'AnthemPublic', special: true },
   { name: 'NovaLibertalia', icon: Ship, page: 'NovaLibertalia', special: true },
   { name: 'DSA Guide', icon: BookOpen, page: 'DSAGuide' },
   { name: 'Extension Demo', icon: Shield, page: 'ExtensionDemo' },
