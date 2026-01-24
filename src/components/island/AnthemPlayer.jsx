@@ -34,8 +34,8 @@ const ANTHEM_LYRICS = [
   { time: 73, line: 'Fair shopping ahead – together we endeavor! 🏴‍☠️' }
 ];
 
-// Optional: Add your audio file URL here after uploading via base44.integrations.Core.UploadFile
-const AUDIO_URL = null; // Replace with your uploaded audio URL
+// Anthem audio file
+const AUDIO_URL = 'https://base44.app/api/apps/6936fd0323c8bf22550d6bd3/files/public/6936fd0323c8bf22550d6bd3/a4d35c5e0_AdPiratinAnthem_PlundertheAds_.mp3';
 
 export default function AnthemPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
