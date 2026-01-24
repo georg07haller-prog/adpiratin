@@ -6,7 +6,7 @@ import {
   Skull, ArrowRight, Shield, Target, Coins, Users, 
   Eye, AlertTriangle, Search, Trophy, Sparkles, 
   Chrome, Smartphone, Check, Star, TrendingDown,
-  Heart, Zap, Globe, Lock
+  Heart, Zap, Globe, Lock, Ship, MapPin, MessageSquare, Music, Anchor
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
