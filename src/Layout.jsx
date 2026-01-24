@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { name: 'Hunt Deals', icon: Search, page: 'HuntAlternatives' },
   { name: 'Leaderboard', icon: Trophy, page: 'Leaderboard' },
   { name: 'Meme Gen', icon: Share2, page: 'MemeGenerator' },
+  { name: 'Anthem', icon: Coins, page: 'AnthemPublic', special: true },
   { name: 'NovaLibertalia', icon: Ship, page: 'NovaLibertalia', special: true },
   { name: 'DSA Guide', icon: BookOpen, page: 'DSAGuide' },
   { name: 'Extension Demo', icon: Shield, page: 'ExtensionDemo' },
