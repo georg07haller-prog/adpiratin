@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import { 
   ArrowLeft, Shield, AlertTriangle, CheckCircle, XCircle,
   Clock, Flag, Eye, ExternalLink, Coins, Users,
-  BarChart3, TrendingUp
+  BarChart3, TrendingUp, Upload, Music
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -49,6 +49,8 @@ const violationLabels = {
 export default function AdminPanel() {
   const [user, setUser] = useState(null);
   const [statusFilter, setStatusFilter] = useState('all');
+  const [uploading, setUploading] = useState(false);
+  const [uploadResult, setUploadResult] = useState(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -73,6 +75,23 @@ export default function AdminPanel() {
       queryClient.invalidateQueries(['allReports']);
     }
   });
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setUploadResult(null);
+    
+    try {
+      const result = await base44.integrations.Core.UploadFile({ file });
+      setUploadResult(result.file_url);
+    } catch (error) {
+      alert('Ошибка загрузки: ' + error.message);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const filteredReports = statusFilter === 'all' 
     ? reports 
@@ -129,6 +148,48 @@ export default function AdminPanel() {
             <p className="text-[#8ba3c7] text-sm">Manage reports and pirates</p>
           </div>
         </motion.div>
+
+        {/* Anthem Upload */}
+        <Card className="bg-[#1a2d4a]/50 backdrop-blur-xl border-[#2a4a6a]/50 mb-6">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center gap-2">
+              <Music className="w-5 h-5 text-[#d4af37]" />
+              Загрузить аудио гимна
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col gap-3">
+              <input
+                type="file"
+                accept="audio/*"
+                onChange={handleFileUpload}
+                disabled={uploading}
+                className="hidden"
+                id="anthem-upload"
+              />
+              <label htmlFor="anthem-upload">
+                <Button
+                  as="span"
+                  disabled={uploading}
+                  className="bg-[#d4af37] hover:bg-[#b8962e] text-[#0a1628] font-bold cursor-pointer"
+                >
+                  <Upload className="w-4 h-4 mr-2" />
+                  {uploading ? 'Загрузка...' : 'Выбрать MP3 файл'}
+                </Button>
+              </label>
+              
+              {uploadResult && (
+                <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+                  <p className="text-green-400 text-sm mb-2">✅ Файл загружен!</p>
+                  <p className="text-[#8ba3c7] text-xs mb-2">Скопируй этот URL в AUDIO_URL в components/island/AnthemPlayer.jsx:</p>
+                  <code className="block p-2 bg-[#0a1628] rounded text-[#d4af37] text-xs break-all">
+                    {uploadResult}
+                  </code>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
