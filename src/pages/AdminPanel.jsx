@@ -167,15 +167,12 @@ export default function AdminPanel() {
                 className="hidden"
                 id="anthem-upload"
               />
-              <label htmlFor="anthem-upload">
-                <Button
-                  as="span"
-                  disabled={uploading}
-                  className="bg-[#d4af37] hover:bg-[#b8962e] text-[#0a1628] font-bold cursor-pointer"
-                >
-                  <Upload className="w-4 h-4 mr-2" />
-                  {uploading ? 'Загрузка...' : 'Выбрать MP3 файл'}
-                </Button>
+              <label 
+                htmlFor="anthem-upload"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-[#d4af37] hover:bg-[#b8962e] text-[#0a1628] font-bold cursor-pointer transition-colors"
+              >
+                <Upload className="w-4 h-4" />
+                {uploading ? 'Загрузка...' : 'Выбрать MP3 файл'}
               </label>
               
               {uploadResult && (
