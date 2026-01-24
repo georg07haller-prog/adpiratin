@@ -281,6 +281,142 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* NovaLibertalia Section */}
+      <section className="py-20 px-4 bg-gradient-to-br from-[#0d1a2d] via-[#1a2d4a] to-[#0d1a2d] relative overflow-hidden">
+        <div className="absolute inset-0 opacity-20 pointer-events-none" 
+          style={{backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(212, 175, 55, 0.15) 1px, transparent 0)', backgroundSize: '40px 40px'}} 
+        />
+        <div className="max-w-6xl mx-auto relative">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <motion.div
+              animate={{ rotate: [0, 5, -5, 0] }}
+              transition={{ duration: 3, repeat: Infinity }}
+              className="inline-block mb-4"
+            >
+              <Ship className="w-16 h-16 text-[#d4af37] mx-auto" />
+            </motion.div>
+            <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
+              NovaLibertalia 🏴‍☠️
+            </h2>
+            <p className="text-[#c4d4e4] text-lg md:text-xl max-w-3xl mx-auto">
+              Your exclusive blockchain-gated pirate paradise. Earn enough points to unlock an island of opportunity!
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <Card className="bg-gradient-to-br from-[#1a2d4a]/80 to-[#0f2137]/60 border-[#d4af37]/30 h-full">
+                <CardContent className="p-6">
+                  <Coins className="w-12 h-12 text-[#d4af37] mb-4" />
+                  <h3 className="text-white font-bold text-xl mb-3">Doubloon Economy</h3>
+                  <p className="text-[#c4d4e4] mb-4">
+                    Swap Pirate Points for Doubloons (1:1 ratio). Spend them in the virtual marketplace on villa skins, exclusive badges, and production licenses.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge className="bg-[#d4af37]/20 text-[#d4af37]">Villa Skins</Badge>
+                    <Badge className="bg-purple-500/20 text-purple-400">Exclusive Badges</Badge>
+                    <Badge className="bg-cyan-500/20 text-cyan-400">Merch Templates</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <Card className="bg-gradient-to-br from-[#1a2d4a]/80 to-[#0f2137]/60 border-[#1e90ff]/30 h-full">
+                <CardContent className="p-6">
+                  <MapPin className="w-12 h-12 text-[#1e90ff] mb-4" />
+                  <h3 className="text-white font-bold text-xl mb-3">Own Your Land</h3>
+                  <p className="text-[#c4d4e4] mb-4">
+                    Interactive island map with 100 plots. Claim your villa, customize with skins, and watch your pirate empire grow. Premium center plots offer higher yields!
+                  </p>
+                  <div className="p-3 bg-[#0a1628]/50 rounded-lg">
+                    <p className="text-[#8ba3c7] text-sm">🏗️ Land claiming launches Q2 2026</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+            >
+              <Card className="bg-gradient-to-br from-[#1a2d4a]/80 to-[#0f2137]/60 border-emerald-500/30 h-full">
+                <CardContent className="p-6">
+                  <MessageSquare className="w-12 h-12 text-emerald-400 mb-4" />
+                  <h3 className="text-white font-bold text-xl mb-3">Pirate Tavern</h3>
+                  <p className="text-[#c4d4e4] mb-4">
+                    Exclusive community hub for successful pirates. Share hunt hacks, coordinate DSA reports, vote for Pirate King, and shape the platform's future.
+                  </p>
+                  <div className="flex items-center gap-2 text-green-400 text-sm">
+                    <Users className="w-4 h-4" />
+                    <span>247 pirates online now</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+            >
+              <Card className="bg-gradient-to-br from-[#1a2d4a]/80 to-[#0f2137]/60 border-purple-500/30 h-full">
+                <CardContent className="p-6">
+                  <Music className="w-12 h-12 text-purple-400 mb-4" />
+                  <h3 className="text-white font-bold text-xl mb-3">Sing the Anthem!</h3>
+                  <p className="text-[#c4d4e4] mb-4">
+                    In-app anthem player with full upbeat pirate shanty + scrolling lyrics. Earn rewards for singing along! Complete with coin rain animations.
+                  </p>
+                  <div className="p-3 bg-purple-500/10 rounded-lg">
+                    <p className="text-purple-300 text-sm italic">
+                      "Yo-ho, yo-ho, a pirate's life for me! We fight the ads, we hunt the deals!"
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center"
+          >
+            <Card className="bg-gradient-to-r from-[#d4af37]/20 to-transparent border-[#d4af37]/30 p-8">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="text-left">
+                  <h3 className="text-white font-bold text-2xl mb-2">Ready to Join NovaLibertalia?</h3>
+                  <p className="text-[#c4d4e4]">Earn 500 Pirate Points to unlock exclusive island access</p>
+                </div>
+                <Link to={createPageUrl('Dashboard')}>
+                  <Button className="bg-gradient-to-r from-[#d4af37] to-[#b8962e] text-[#0a1628] font-bold text-lg px-8 py-6 whitespace-nowrap">
+                    <Anchor className="w-5 h-5 mr-2" />
+                    Start Hunting Now
+                  </Button>
+                </Link>
+              </div>
+            </Card>
+          </motion.div>
+        </div>
+      </section>
+
       {/* How It Works */}
       <section className="py-20 px-4 bg-[#0d1a2d]/50">
         <div className="max-w-7xl mx-auto">

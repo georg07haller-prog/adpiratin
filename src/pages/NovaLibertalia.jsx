@@ -450,6 +450,7 @@ export default function NovaLibertalia() {
             </CardContent>
           </Card>
         </motion.div>
+        )}
 
         {/* CTA */}
         {!hasAccess && (
