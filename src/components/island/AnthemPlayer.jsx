@@ -5,19 +5,37 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
 const ANTHEM_LYRICS = [
-  { time: 0, line: '🏴‍☠️ Yo-ho, yo-ho, a pirate\'s life for me!' },
-  { time: 3, line: 'We fight the ads, we hunt the deals!' },
-  { time: 6, line: 'No fake discounts, no lying fees!' },
-  { time: 9, line: 'Fair winds and fair prices, we decree!' },
-  { time: 12, line: '⚓ From NovaLibertalia, we sail so free!' },
-  { time: 15, line: 'With Doubloons bright, our treasure we see!' },
-  { time: 18, line: 'The DSA\'s our sword, justice our creed!' },
-  { time: 21, line: 'Yo-ho, yo-ho, AdPiratins we be!' },
-  { time: 24, line: '💰 Bust the scammers, share the loot!' },
-  { time: 27, line: 'From Berlin seas to Dublin\'s route!' },
-  { time: 30, line: 'We plunder lies and hoist the truth!' },
-  { time: 33, line: 'Yo-ho, yo-ho, forever youth!' }
+  { time: 0, line: '🏴‍☠️ [Verse 1]' },
+  { time: 2, line: 'Ahoy, ye shoppers on the digital sea,' },
+  { time: 5, line: 'Sneaky ads lurking, trying to fool thee!' },
+  { time: 8, line: '€99 for sneakers that ain\'t worth the price,' },
+  { time: 11, line: 'Greenwashing lies – oh, that ain\'t nice!' },
+  { time: 14, line: '⚓ [Chorus]' },
+  { time: 16, line: 'AdPiratin, hoist the black flag high!' },
+  { time: 19, line: 'Spot the DSA label, make those banners die!' },
+  { time: 22, line: 'Hunt for deals cheaper, better, eco-true,' },
+  { time: 25, line: 'Save your euros – the treasure\'s for you!' },
+  { time: 28, line: 'Arrr, plunder the ads, yo ho ho!' },
+  { time: 31, line: 'With AdPiratin – fair winds we go!' },
+  { time: 34, line: '🎯 [Verse 2]' },
+  { time: 36, line: 'Click "Busted!" on lies, earn points for the fight,' },
+  { time: 39, line: 'Meme \'em on X – share the pirate light!' },
+  { time: 42, line: 'From Berlin cafés to Amsterdam canals,' },
+  { time: 45, line: 'We\'re busting fake deals, answering the calls!' },
+  { time: 48, line: '⚓ [Chorus - Reprise]' },
+  { time: 50, line: 'AdPiratin, hoist the black flag high!' },
+  { time: 53, line: 'Hunt for deals cheaper, better, eco-true!' },
+  { time: 56, line: 'Arrr, plunder the ads, yo ho ho!' },
+  { time: 59, line: 'With AdPiratin – fair winds we go!' },
+  { time: 62, line: '💰 [Outro]' },
+  { time: 64, line: 'Join the crew now, back us on the go,' },
+  { time: 67, line: 'Indiegogo launch – let the treasure flow!' },
+  { time: 70, line: 'Yo ho ho – AdPiratin forever!' },
+  { time: 73, line: 'Fair shopping ahead – together we endeavor! 🏴‍☠️' }
 ];
+
+// Optional: Add your audio file URL here after uploading via base44.integrations.Core.UploadFile
+const AUDIO_URL = null; // Replace with your uploaded audio URL
 
 export default function AnthemPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -26,7 +44,15 @@ export default function AnthemPlayer() {
   const audioRef = useRef(null);
 
   useEffect(() => {
-    if (isPlaying) {
+    if (AUDIO_URL && audioRef.current) {
+      // Use real audio if available
+      if (isPlaying) {
+        audioRef.current.play();
+      } else {
+        audioRef.current.pause();
+      }
+    } else if (isPlaying) {
+      // Fallback to timer simulation
       const interval = setInterval(() => {
         setCurrentTime(prev => prev + 1);
       }, 1000);
@@ -35,7 +61,7 @@ export default function AnthemPlayer() {
   }, [isPlaying]);
 
   useEffect(() => {
-    if (currentTime >= 36) {
+    if (currentTime >= 76) {
       setIsPlaying(false);
       setCurrentTime(0);
     }
@@ -46,9 +72,25 @@ export default function AnthemPlayer() {
     setShowAnimation(!isPlaying);
     if (!isPlaying) {
       setCurrentTime(0);
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+      }
     } else {
       setShowAnimation(false);
     }
+  };
+
+  // Update time from real audio
+  const handleTimeUpdate = () => {
+    if (audioRef.current) {
+      setCurrentTime(Math.floor(audioRef.current.currentTime));
+    }
+  };
+
+  const handleAudioEnd = () => {
+    setIsPlaying(false);
+    setShowAnimation(false);
+    setCurrentTime(0);
   };
 
   const getCurrentLyric = () => {
@@ -58,6 +100,16 @@ export default function AnthemPlayer() {
 
   return (
     <div className="relative">
+      {/* Hidden Audio Element */}
+      {AUDIO_URL && (
+        <audio
+          ref={audioRef}
+          src={AUDIO_URL}
+          onTimeUpdate={handleTimeUpdate}
+          onEnded={handleAudioEnd}
+        />
+      )}
+
       {/* Background Animation */}
       <AnimatePresence>
         {showAnimation && (
@@ -135,7 +187,7 @@ export default function AnthemPlayer() {
               <Volume2 className="w-4 h-4" />
               <span>{Math.floor(currentTime / 60)}:{(currentTime % 60).toString().padStart(2, '0')}</span>
               <span>/</span>
-              <span>0:36</span>
+              <span>1:16</span>
             </div>
 
             <Button
@@ -163,9 +215,15 @@ export default function AnthemPlayer() {
             <motion.div
               className="h-full bg-gradient-to-r from-[#d4af37] to-[#ffd700]"
               initial={{ width: 0 }}
-              animate={{ width: `${(currentTime / 36) * 100}%` }}
+              animate={{ width: `${(currentTime / 76) * 100}%` }}
             />
           </div>
+
+          {!AUDIO_URL && (
+            <p className="text-[#5a7a9a] text-xs text-center mt-3">
+              ℹ️ Без аудио — только текст и анимация. Загрузите MP3 для полного эффекта!
+            </p>
+          )}
         </CardContent>
       </Card>
     </div>
