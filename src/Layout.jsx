@@ -62,7 +62,7 @@ export default function Layout({ children, currentPageName }) {
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {NAV_ITEMS.map((item) => {
             const isActive = currentPageName === item.page;
             return (
