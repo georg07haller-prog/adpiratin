@@ -1,4 +1,5 @@
 import AdminPanel from './pages/AdminPanel';
+import AnthemPublic from './pages/AnthemPublic';
 import DSAGuide from './pages/DSAGuide';
 import Dashboard from './pages/Dashboard';
 import ExtensionDemo from './pages/ExtensionDemo';
@@ -11,12 +12,12 @@ import MemeGenerator from './pages/MemeGenerator';
 import MobilePreview from './pages/MobilePreview';
 import NovaLibertalia from './pages/NovaLibertalia';
 import ReportAd from './pages/ReportAd';
-import AnthemPublic from './pages/AnthemPublic';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AdminPanel": AdminPanel,
+    "AnthemPublic": AnthemPublic,
     "DSAGuide": DSAGuide,
     "Dashboard": Dashboard,
     "ExtensionDemo": ExtensionDemo,
@@ -29,7 +30,6 @@ export const PAGES = {
     "MobilePreview": MobilePreview,
     "NovaLibertalia": NovaLibertalia,
     "ReportAd": ReportAd,
-    "AnthemPublic": AnthemPublic,
 }
 
 export const pagesConfig = {

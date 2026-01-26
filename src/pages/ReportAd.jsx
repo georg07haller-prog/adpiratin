@@ -16,6 +16,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import ContentGeneratorPopup from '@/components/content/ContentGeneratorPopup';
 
 const VIOLATION_TYPES = [
   { id: 'fake_price', label: 'Fake Price / Discount', icon: DollarSign, description: 'Inflated "original" price to fake a bigger discount', points: 30 },
@@ -51,6 +52,8 @@ export default function ReportAd() {
   const [uploading, setUploading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [earnedPoints, setEarnedPoints] = useState(0);
+  const [showContentGenerator, setShowContentGenerator] = useState(false);
+  const [reportedAdData, setReportedAdData] = useState(null);
   
   const queryClient = useQueryClient();
 
@@ -90,6 +93,13 @@ export default function ReportAd() {
     onSuccess: (points) => {
       setEarnedPoints(points);
       setShowSuccess(true);
+      setReportedAdData({
+        id: Date.now().toString(),
+        advertiser: formData.advertiser,
+        description: formData.description,
+        violationType: selectedViolation?.label,
+        screenshotUrl: formData.screenshot_url
+      });
       queryClient.invalidateQueries(['pirateProfile']);
       queryClient.invalidateQueries(['userReports']);
     }
@@ -151,6 +161,28 @@ export default function ReportAd() {
             Our crew will verify this report. If confirmed, you may earn bonus points!
           </p>
 
+          <motion.div 
+            className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-xl p-4 mb-6"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.7 }}
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <Sparkles className="w-5 h-5 text-purple-400" />
+              <h3 className="text-white font-bold">Turn this lie into content?</h3>
+            </div>
+            <p className="text-[#8ba3c7] text-sm mb-3">
+              Generate viral memes or shorts to expose this ad publicly. Earn bonus points for sharing!
+            </p>
+            <Button 
+              onClick={() => setShowContentGenerator(true)}
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold hover:opacity-90"
+            >
+              <ImageIcon className="w-4 h-4 mr-2" />
+              Create Content
+            </Button>
+          </motion.div>
+
           <div className="flex gap-3 justify-center">
             <Link to={createPageUrl('Dashboard')}>
               <Button className="bg-[#1a2d4a] hover:bg-[#2a4a6a] text-white">
@@ -159,12 +191,27 @@ export default function ReportAd() {
               </Button>
             </Link>
             <Button 
-              onClick={() => { setShowSuccess(false); setStep(1); setFormData({ advertiser: '', violation_type: '', description: '', evidence_url: '', screenshot_url: '', country: '' }); }}
+              onClick={() => { setShowSuccess(false); setStep(1); setFormData({ advertiser: '', violation_type: '', description: '', evidence_url: '', screenshot_url: '', country: '' }); setReportedAdData(null); }}
               className="bg-gradient-to-r from-[#d4af37] to-[#b8962e] text-[#0a1628] font-bold hover:opacity-90"
             >
               Report Another
             </Button>
           </div>
+
+          <ContentGeneratorPopup
+            isOpen={showContentGenerator}
+            onClose={() => setShowContentGenerator(false)}
+            adData={reportedAdData}
+            onPointsEarned={(points) => {
+              setEarnedPoints(prev => prev + points);
+              if (pirateProfile?.[0]) {
+                base44.entities.PirateUser.update(pirateProfile[0].id, {
+                  total_points: (pirateProfile[0].total_points || 0) + points
+                });
+                queryClient.invalidateQueries(['pirateProfile']);
+              }
+            }}
+          />
         </motion.div>
       </div>
     );

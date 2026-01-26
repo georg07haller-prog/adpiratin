@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import VoiceCommands from '@/components/VoiceCommands';
+import ContentGeneratorPopup from '@/components/content/ContentGeneratorPopup';
 
 export default function HuntAlternatives() {
   const [user, setUser] = useState(null);
@@ -20,6 +21,8 @@ export default function HuntAlternatives() {
   const [results, setResults] = useState(null);
   const [searching, setSearching] = useState(false);
   const [provider, setProvider] = useState('Google Shopping');
+  const [showContentGenerator, setShowContentGenerator] = useState(false);
+  const [huntedAdData, setHuntedAdData] = useState(null);
   
   const queryClient = useQueryClient();
 
@@ -106,6 +109,15 @@ Make the prices realistic for the EU market. Include a mix of budget and premium
         savings.total += totalSaved;
         localStorage.setItem('adpiratin_savings', JSON.stringify(savings));
       }
+      
+      // Set data for content generator
+      setHuntedAdData({
+        id: Date.now().toString(),
+        advertiser: 'Overpriced retailer',
+        description: `Found ${data.alternatives?.length || 0} cheaper alternatives for "${searchQuery}" saving up to €${Math.max(...(data.alternatives?.map(a => a.savings) || [0])).toFixed(2)}`,
+        violationType: 'fake_price',
+        screenshotUrl: null
+      });
       
       if (pirateProfile?.[0]) {
         await base44.entities.PirateUser.update(pirateProfile[0].id, {
@@ -291,7 +303,26 @@ Make the prices realistic for the EU market. Include a mix of budget and premium
                 ))}
               </div>
 
-              <div className="mt-6 p-4 bg-[#0a1628]/50 rounded-xl border border-[#2a4a6a]/30">
+              <div className="mt-6 p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-xl">
+                <div className="flex items-center justify-between gap-4 mb-3">
+                  <div className="flex items-center gap-3">
+                    <Sparkles className="w-5 h-5 text-purple-400" />
+                    <div>
+                      <h3 className="text-white font-bold text-sm">Share Your Hunt!</h3>
+                      <p className="text-[#8ba3c7] text-xs">Generate content & earn bonus points</p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => setShowContentGenerator(true)}
+                    size="sm"
+                    className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90 shrink-0"
+                  >
+                    Create Content
+                  </Button>
+                </div>
+              </div>
+
+              <div className="mt-4 p-4 bg-[#0a1628]/50 rounded-xl border border-[#2a4a6a]/30">
                 <div className="flex items-start gap-3">
                   <Shield className="w-5 h-5 text-[#1e90ff] shrink-0 mt-0.5" />
                   <p className="text-[#8ba3c7] text-sm"><strong className="text-white">DSA 2025:</strong> Retailers must show lowest 30-day price with discounts. Estimates may vary.</p>
@@ -316,6 +347,21 @@ Make the prices realistic for the EU market. Include a mix of budget and premium
       <div className="fixed bottom-8 right-8 z-50">
         <VoiceCommands onCommand={handleVoiceCommand} />
       </div>
+
+      {/* Content Generator Popup */}
+      <ContentGeneratorPopup
+        isOpen={showContentGenerator}
+        onClose={() => setShowContentGenerator(false)}
+        adData={huntedAdData}
+        onPointsEarned={(points) => {
+          if (pirateProfile?.[0]) {
+            base44.entities.PirateUser.update(pirateProfile[0].id, {
+              total_points: (pirateProfile[0].total_points || 0) + points
+            });
+            queryClient.invalidateQueries(['pirateProfile']);
+          }
+        }}
+      />
     </div>
   );
 }
