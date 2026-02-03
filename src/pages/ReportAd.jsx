@@ -90,6 +90,29 @@ export default function ReportAd() {
       
       return points;
     },
+    onMutate: async (data) => {
+      await queryClient.cancelQueries(['pirateProfile']);
+      const violation = VIOLATION_TYPES.find(v => v.id === data.violation_type);
+      const points = violation?.points || 25;
+      const previousProfile = queryClient.getQueryData(['pirateProfile', user?.email]);
+      
+      if (previousProfile?.[0]) {
+        queryClient.setQueryData(['pirateProfile', user?.email], [
+          {
+            ...previousProfile[0],
+            ads_reported: (previousProfile[0].ads_reported || 0) + 1,
+            total_points: (previousProfile[0].total_points || 0) + points
+          }
+        ]);
+      }
+      
+      return { previousProfile };
+    },
+    onError: (err, variables, context) => {
+      if (context?.previousProfile) {
+        queryClient.setQueryData(['pirateProfile', user?.email], context.previousProfile);
+      }
+    },
     onSuccess: (points) => {
       setEarnedPoints(points);
       setShowSuccess(true);

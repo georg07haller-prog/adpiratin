@@ -49,6 +49,7 @@
  */
 import AdminPanel from './pages/AdminPanel';
 import AnthemPublic from './pages/AnthemPublic';
+import Clans from './pages/Clans';
 import DSAGuide from './pages/DSAGuide';
 import Dashboard from './pages/Dashboard';
 import ExtensionDemo from './pages/ExtensionDemo';
@@ -61,7 +62,6 @@ import MemeGenerator from './pages/MemeGenerator';
 import MobilePreview from './pages/MobilePreview';
 import NovaLibertalia from './pages/NovaLibertalia';
 import ReportAd from './pages/ReportAd';
-import Clans from './pages/Clans';
 import WallOfShamePage from './pages/WallOfShamePage';
 import YouTubeLive from './pages/YouTubeLive';
 import __Layout from './Layout.jsx';
@@ -70,6 +70,7 @@ import __Layout from './Layout.jsx';
 export const PAGES = {
     "AdminPanel": AdminPanel,
     "AnthemPublic": AnthemPublic,
+    "Clans": Clans,
     "DSAGuide": DSAGuide,
     "Dashboard": Dashboard,
     "ExtensionDemo": ExtensionDemo,
@@ -82,7 +83,6 @@ export const PAGES = {
     "MobilePreview": MobilePreview,
     "NovaLibertalia": NovaLibertalia,
     "ReportAd": ReportAd,
-    "Clans": Clans,
     "WallOfShamePage": WallOfShamePage,
     "YouTubeLive": YouTubeLive,
 }
