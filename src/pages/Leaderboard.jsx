@@ -186,7 +186,7 @@ export default function Leaderboard() {
           </CardContent>
         </Card>
       </div>
-      </div>
+    </div>
     </PullToRefresh>
   );
 }
