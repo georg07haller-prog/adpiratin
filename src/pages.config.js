@@ -65,6 +65,7 @@ import ReportAd from './pages/ReportAd';
 import WallOfShamePage from './pages/WallOfShamePage';
 import YouTubeLive from './pages/YouTubeLive';
 import Profile from './pages/Profile';
+import ClanHub from './pages/ClanHub';
 import __Layout from './Layout.jsx';
 
 
@@ -87,6 +88,7 @@ export const PAGES = {
     "WallOfShamePage": WallOfShamePage,
     "YouTubeLive": YouTubeLive,
     "Profile": Profile,
+    "ClanHub": ClanHub,
 }
 
 export const pagesConfig = {

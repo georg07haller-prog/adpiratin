@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { name: 'Hunt Deals', icon: Search, page: 'HuntAlternatives' },
   { name: 'Wall of Shame', icon: Skull, page: 'WallOfShamePage', special: true },
   { name: 'Clans', icon: Flag, page: 'Clans', special: true },
+  { name: 'Clan Hub', icon: Ship, page: 'ClanHub', special: true },
   { name: 'Leaderboard', icon: Trophy, page: 'Leaderboard' },
   { name: 'Meme Gen', icon: Share2, page: 'MemeGenerator' },
   { name: 'Anthem', icon: Music, page: 'AnthemPublic', special: true },
