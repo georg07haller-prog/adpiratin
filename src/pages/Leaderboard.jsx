@@ -23,6 +23,7 @@ const RANK_ICONS = {
 
 export default function Leaderboard() {
   const [user, setUser] = useState(null);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
@@ -185,6 +186,7 @@ export default function Leaderboard() {
           </CardContent>
         </Card>
       </div>
-    </div>
+      </div>
+    </PullToRefresh>
   );
 }
