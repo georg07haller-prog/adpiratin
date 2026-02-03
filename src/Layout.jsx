@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Skull, Home, AlertTriangle, Search, Trophy, Share2, 
-  BookOpen, Shield, Menu, X, LogOut, User, Coins, Smartphone, Ship, Music, Flag, Youtube, Trash2
+  BookOpen, Shield, Menu, X, LogOut, User, Coins, Smartphone, Ship, Music, Flag, Youtube, Trash2, ArrowLeft
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useQuery, useMutation } from '@tanstack/react-query';
@@ -39,6 +39,10 @@ export default function Layout({ children, currentPageName }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  
+  const mainTabPages = ['Dashboard', 'ReportAd', 'HuntAlternatives', 'Profile'];
+  const showBackButton = !mainTabPages.includes(currentPageName);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
@@ -70,7 +74,7 @@ export default function Layout({ children, currentPageName }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a1628] select-none">
+    <div className="min-h-screen bg-[#0a1628]">
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-64 bg-[#0d1a2d]/90 backdrop-blur-xl border-r border-[#1a2d4a] flex-col z-40">
         {/* Logo */}
@@ -168,12 +172,23 @@ export default function Layout({ children, currentPageName }) {
       {/* Mobile Header */}
       <header className="md:hidden fixed top-0 left-0 right-0 bg-[#0d1a2d]/95 backdrop-blur-xl border-b border-[#1a2d4a] z-50 pt-safe">
         <div className="flex items-center justify-between px-4 py-3">
-          <Link to={createPageUrl('Dashboard')} className="flex items-center gap-2">
-            <div className="p-1.5 bg-gradient-to-br from-[#d4af37] to-[#b8962e] rounded-lg">
-              <Skull className="w-5 h-5 text-[#0a1628]" />
-            </div>
-            <span className="text-lg font-black text-white">AdPiratin</span>
-          </Link>
+          {showBackButton ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate(-1)}
+              className="text-white -ml-2"
+            >
+              <ArrowLeft className="w-6 h-6" />
+            </Button>
+          ) : (
+            <Link to={createPageUrl('Dashboard')} className="flex items-center gap-2">
+              <div className="p-1.5 bg-gradient-to-br from-[#d4af37] to-[#b8962e] rounded-lg">
+                <Skull className="w-5 h-5 text-[#0a1628]" />
+              </div>
+              <span className="text-lg font-black text-white">AdPiratin</span>
+            </Link>
+          )}
           
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1 px-2 py-1 bg-[#1a2d4a] rounded-lg">
@@ -260,17 +275,7 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Main Content */}
       <main className="md:ml-64 pt-14 md:pt-0 pb-20 md:pb-0 min-h-screen overscroll-none">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={location.pathname}
-            initial={{ x: 10, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -10, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            {children}
-          </motion.div>
-        </AnimatePresence>
+        {children}
       </main>
 
       {/* Mobile Bottom Tab Bar */}
