@@ -5,10 +5,10 @@ import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Skull, Home, AlertTriangle, Search, Trophy, Share2, 
-  BookOpen, Shield, Menu, X, LogOut, User, Coins, Smartphone, Ship, Music, Flag, Youtube
+  BookOpen, Shield, Menu, X, LogOut, User, Coins, Smartphone, Ship, Music, Flag, Youtube, Trash2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 
 const NAV_ITEMS = [
   { name: 'Dashboard', icon: Home, page: 'Dashboard' },
@@ -26,9 +26,17 @@ const NAV_ITEMS = [
   { name: 'Mobile App', icon: Smartphone, page: 'MobilePreview' },
 ];
 
+const MOBILE_TAB_ITEMS = [
+  { name: 'Dashboard', icon: Home, page: 'Dashboard' },
+  { name: 'Report', icon: AlertTriangle, page: 'ReportAd' },
+  { name: 'Hunt', icon: Search, page: 'HuntAlternatives' },
+  { name: 'Clans', icon: Flag, page: 'Clans' }
+];
+
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -43,12 +51,25 @@ export default function Layout({ children, currentPageName }) {
 
   const profile = pirateProfile?.[0];
 
+  const deleteAccountMutation = useMutation({
+    mutationFn: async () => {
+      await base44.entities.User.delete(user.id);
+      base44.auth.logout();
+    }
+  });
+
   const handleLogout = () => {
     base44.auth.logout();
   };
 
+  const handleDeleteAccount = () => {
+    if (window.confirm('Are you absolutely sure? This action cannot be undone.')) {
+      deleteAccountMutation.mutate();
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#0a1628]">
+    <div className="min-h-screen bg-[#0a1628] select-none">
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-64 bg-[#0d1a2d]/90 backdrop-blur-xl border-r border-[#1a2d4a] flex-col z-40">
         {/* Logo */}
@@ -144,7 +165,7 @@ export default function Layout({ children, currentPageName }) {
       </aside>
 
       {/* Mobile Header */}
-      <header className="md:hidden fixed top-0 left-0 right-0 bg-[#0d1a2d]/95 backdrop-blur-xl border-b border-[#1a2d4a] z-50">
+      <header className="md:hidden fixed top-0 left-0 right-0 bg-[#0d1a2d]/95 backdrop-blur-xl border-b border-[#1a2d4a] z-50 pt-safe">
         <div className="flex items-center justify-between px-4 py-3">
           <Link to={createPageUrl('Dashboard')} className="flex items-center gap-2">
             <div className="p-1.5 bg-gradient-to-br from-[#d4af37] to-[#b8962e] rounded-lg">
@@ -213,14 +234,22 @@ export default function Layout({ children, currentPageName }) {
                 </Link>
               )}
 
-              <div className="pt-4 border-t border-[#1a2d4a] mt-4">
+              <div className="pt-4 border-t border-[#1a2d4a] mt-4 space-y-2">
                 <Button
                   onClick={handleLogout}
                   variant="ghost"
-                  className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                  className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-red-500/10 min-h-[44px]"
                 >
                   <LogOut className="w-5 h-5 mr-3" />
                   Logout
+                </Button>
+                <Button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  variant="ghost"
+                  className="w-full justify-start text-red-500 hover:text-red-400 hover:bg-red-500/10 min-h-[44px]"
+                >
+                  <Trash2 className="w-5 h-5 mr-3" />
+                  Delete Account
                 </Button>
               </div>
             </nav>
@@ -229,9 +258,91 @@ export default function Layout({ children, currentPageName }) {
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="md:ml-64 pt-14 md:pt-0 min-h-screen">
-        {children}
+      <main className="md:ml-64 pt-14 md:pt-0 pb-20 md:pb-0 min-h-screen overscroll-none">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ x: 10, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -10, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            {children}
+          </motion.div>
+        </AnimatePresence>
       </main>
+
+      {/* Mobile Bottom Tab Bar */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#0d1a2d]/95 backdrop-blur-xl border-t border-[#1a2d4a] z-50 pb-safe">
+        <div className="grid grid-cols-4 h-16">
+          {MOBILE_TAB_ITEMS.map((item) => {
+            const isActive = currentPageName === item.page;
+            return (
+              <Link key={item.page} to={createPageUrl(item.page)}>
+                <motion.button
+                  className={`w-full h-full flex flex-col items-center justify-center gap-1 min-h-[44px] ${
+                    isActive ? 'text-[#d4af37]' : 'text-[#8ba3c7]'
+                  }`}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <item.icon className="w-6 h-6" />
+                  <span className="text-xs font-medium">{item.name}</span>
+                </motion.button>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+
+      {/* Delete Account Confirmation */}
+      <AnimatePresence>
+        {showDeleteConfirm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowDeleteConfirm(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-[#1a2d4a] border border-red-500/30 rounded-xl p-6 max-w-md w-full"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-3 bg-red-500/20 rounded-xl">
+                  <Trash2 className="w-6 h-6 text-red-500" />
+                </div>
+                <div>
+                  <h3 className="text-white font-bold text-lg">Delete Account</h3>
+                  <p className="text-red-400 text-sm">This action is permanent</p>
+                </div>
+              </div>
+              <p className="text-[#8ba3c7] text-sm mb-6">
+                Are you absolutely sure? All your pirate points, reports, and clan memberships will be permanently deleted. This cannot be undone.
+              </p>
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="flex-1 border-[#2a4a6a] text-[#8ba3c7] hover:bg-[#1a2d4a] min-h-[44px]"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleDeleteAccount}
+                  disabled={deleteAccountMutation.isPending}
+                  className="flex-1 bg-red-500 hover:bg-red-600 text-white min-h-[44px]"
+                >
+                  {deleteAccountMutation.isPending ? 'Deleting...' : 'Delete Forever'}
+                </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
