@@ -30,7 +30,7 @@ const MOBILE_TAB_ITEMS = [
   { name: 'Dashboard', icon: Home, page: 'Dashboard' },
   { name: 'Report', icon: AlertTriangle, page: 'ReportAd' },
   { name: 'Hunt', icon: Search, page: 'HuntAlternatives' },
-  { name: 'Clans', icon: Flag, page: 'Clans' }
+  { name: 'Profile', icon: User, page: 'Profile' }
 ];
 
 export default function Layout({ children, currentPageName }) {

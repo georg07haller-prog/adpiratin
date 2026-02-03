@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import PullToRefresh from '@/components/mobile/PullToRefresh';
 import { 
   Skull, Target, Eye, EyeOff, AlertTriangle, Search, 
   Trophy, Coins, Anchor, Ship, Sparkles, Share2, ChevronRight,
@@ -96,8 +97,16 @@ export default function Dashboard() {
     }
   }, [user, pirateProfile]);
 
+  const handleRefresh = async () => {
+    await Promise.all([
+      queryClient.invalidateQueries(['pirateProfile']),
+      queryClient.invalidateQueries(['userReports'])
+    ]);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a1628] via-[#0f2137] to-[#0a1628] relative overflow-hidden">
+    <PullToRefresh onRefresh={handleRefresh}>
+      <div className="min-h-screen bg-gradient-to-br from-[#0a1628] via-[#0f2137] to-[#0a1628] relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div 
@@ -441,6 +450,7 @@ export default function Dashboard() {
           setTimeout(() => setShowCoins(false), 3000);
         }}
       />
-    </div>
+      </div>
+    </PullToRefresh>
   );
 }

@@ -44,8 +44,13 @@ export default function Leaderboard() {
   const myRank = pirates.findIndex(p => p.id === myProfile?.id) + 1;
   const topThree = pirates.slice(0, 3);
 
+  const handleRefresh = async () => {
+    await queryClient.invalidateQueries(['leaderboard']);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a1628] via-[#0f2137] to-[#0a1628] p-4 md:p-8">
+    <PullToRefresh onRefresh={handleRefresh}>
+      <div className="min-h-screen bg-gradient-to-br from-[#0a1628] via-[#0f2137] to-[#0a1628] p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
         <motion.div className="flex items-center gap-4 mb-8" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
           <Link to={createPageUrl('Dashboard')}>
