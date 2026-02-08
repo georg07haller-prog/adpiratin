@@ -53,6 +53,7 @@ export default function ReportAd() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [earnedPoints, setEarnedPoints] = useState(0);
   const [showContentGenerator, setShowContentGenerator] = useState(false);
+  const [mlDetection, setMlDetection] = useState(null);
   const [reportedAdData, setReportedAdData] = useState(null);
   
   const queryClient = useQueryClient();

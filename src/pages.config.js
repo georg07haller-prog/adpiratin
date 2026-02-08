@@ -49,6 +49,7 @@
  */
 import AdminPanel from './pages/AdminPanel';
 import AnthemPublic from './pages/AnthemPublic';
+import ClanHub from './pages/ClanHub';
 import Clans from './pages/Clans';
 import DSAGuide from './pages/DSAGuide';
 import Dashboard from './pages/Dashboard';
@@ -61,17 +62,18 @@ import Leaderboard from './pages/Leaderboard';
 import MemeGenerator from './pages/MemeGenerator';
 import MobilePreview from './pages/MobilePreview';
 import NovaLibertalia from './pages/NovaLibertalia';
+import Profile from './pages/Profile';
 import ReportAd from './pages/ReportAd';
 import WallOfShamePage from './pages/WallOfShamePage';
 import YouTubeLive from './pages/YouTubeLive';
-import Profile from './pages/Profile';
-import ClanHub from './pages/ClanHub';
+import ContentStudio from './pages/ContentStudio';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AdminPanel": AdminPanel,
     "AnthemPublic": AnthemPublic,
+    "ClanHub": ClanHub,
     "Clans": Clans,
     "DSAGuide": DSAGuide,
     "Dashboard": Dashboard,
@@ -84,11 +86,11 @@ export const PAGES = {
     "MemeGenerator": MemeGenerator,
     "MobilePreview": MobilePreview,
     "NovaLibertalia": NovaLibertalia,
+    "Profile": Profile,
     "ReportAd": ReportAd,
     "WallOfShamePage": WallOfShamePage,
     "YouTubeLive": YouTubeLive,
-    "Profile": Profile,
-    "ClanHub": ClanHub,
+    "ContentStudio": ContentStudio,
 }
 
 export const pagesConfig = {

@@ -19,6 +19,7 @@ import RecentActivity from '@/components/dashboard/RecentActivity';
 import QuickActions from '@/components/dashboard/QuickActions';
 import AchievementBadge from '@/components/dashboard/AchievementBadge';
 import Tutorial from '@/components/tutorial/Tutorial';
+import { detectAdsOnPage, getPrivacyStatus } from '@/utils/mlDetection';
 
 const RANKS = [
   { name: 'Deck Swabber', min: 0, max: 99, icon: Anchor },
@@ -33,6 +34,7 @@ export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [showCoins, setShowCoins] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [mlStatus, setMlStatus] = useState(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -43,6 +45,9 @@ export default function Dashboard() {
     if (!tutorialCompleted) {
       setTimeout(() => setShowTutorial(true), 1000);
     }
+
+    // Initialize ML status
+    setMlStatus(getPrivacyStatus());
   }, []);
 
   // Get savings from localStorage
@@ -348,12 +353,40 @@ export default function Dashboard() {
           </Card>
         </motion.div>
 
+        {/* ML Privacy Banner */}
+        {mlStatus && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+            className="mb-6"
+          >
+            <Card className="bg-gradient-to-r from-purple-500/10 to-blue-500/10 backdrop-blur-xl border-purple-500/30">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-purple-500/20 rounded-lg">
+                    <Shield className="w-5 h-5 text-purple-400" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-white font-bold text-sm">On-Device AI Detection Active</h4>
+                    <p className="text-[#8ba3c7] text-xs">{mlStatus.message}</p>
+                  </div>
+                  <Badge className="bg-green-500/20 text-green-400">
+                    <Zap className="w-3 h-3 mr-1" />
+                    v6
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
         {/* Two Column Layout */}
         <div className="grid md:grid-cols-2 gap-6">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.7 }}
+            transition={{ delay: 0.8 }}
           >
             <RecentActivity reports={reports || []} />
           </motion.div>
@@ -361,7 +394,7 @@ export default function Dashboard() {
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.8 }}
+            transition={{ delay: 0.9 }}
           >
             <Card className="bg-[#1a2d4a]/50 backdrop-blur-xl border-[#2a4a6a]/50">
               <CardHeader className="pb-2">
@@ -400,7 +433,7 @@ export default function Dashboard() {
           className="mt-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9 }}
+          transition={{ delay: 1.0 }}
         >
           <Card className="bg-[#1a2d4a]/50 backdrop-blur-xl border-[#2a4a6a]/50">
             <CardHeader className="pb-2">
