@@ -4,7 +4,7 @@ import { Scan, Shield, Zap, AlertTriangle, CheckCircle, Upload } from 'lucide-re
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { analyzeImageForViolations, getPrivacyStatus } from '@/lib/mlDetection';
+import { analyzeImageForViolations, getPrivacyStatus } from '@/components/utils/mlDetection';
 
 export default function MLScanner({ onDetection }) {
   const [scanning, setScanning] = useState(false);

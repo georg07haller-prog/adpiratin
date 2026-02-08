@@ -19,7 +19,7 @@ import RecentActivity from '@/components/dashboard/RecentActivity';
 import QuickActions from '@/components/dashboard/QuickActions';
 import AchievementBadge from '@/components/dashboard/AchievementBadge';
 import Tutorial from '@/components/tutorial/Tutorial';
-import { detectAdsOnPage, getPrivacyStatus } from '@/lib/mlDetection';
+import { detectAdsOnPage, getPrivacyStatus } from '@/components/utils/mlDetection';
 
 const RANKS = [
   { name: 'Deck Swabber', min: 0, max: 99, icon: Anchor },
