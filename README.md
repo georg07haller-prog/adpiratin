@@ -4,13 +4,13 @@ DSA-smart pirate browser extension + mobile app that detects labelled ads, hides
 
 ## Demo
 
-![Main Interface](main/AdPiratin1.jpg)  
+![Main Interface](AdPiratin1.jpg)  
 
-![Busted Animation](main/AdPiratinGIF3-2.gif)  
+![Busted Animation](AdPiratinGIF3-2.gif)  
 
-![Yo ho ho GIF](main/AdPiratinGIF2-2.gif)  
+![Yo ho ho GIF](AdPiratinGIF2-2.gif)  
 
-![Dashboard Screenshot](main/AdPiratin2.jpg)  
+![Dashboard Screenshot](AdPiratin2.jpg)  
 
 ## Quick Start
 1. Open [https://ad-piratin.base44.app](https://ad-piratin.base44.app/Landing)  
