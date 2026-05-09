@@ -5,12 +5,14 @@ import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Skull, Home, AlertTriangle, Search, Trophy, Share2, 
-  BookOpen, Shield, Menu, X, LogOut, User, Coins, Smartphone, Ship, Music, Flag, Youtube, Trash2, ArrowLeft
+  BookOpen, Shield, Menu, X, LogOut, User, Coins, Smartphone, Ship, Music, Flag, Youtube, Trash2, ArrowLeft, Mail
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
 const NAV_ITEMS = [
+  { name: 'About', icon: BookOpen, page: 'About' },
+  { name: 'Contact', icon: Mail, page: 'Contact' },
   { name: 'Dashboard', icon: Home, page: 'Dashboard' },
   { name: 'Report Ad', icon: AlertTriangle, page: 'ReportAd' },
   { name: 'Hunt Deals', icon: Search, page: 'HuntAlternatives' },

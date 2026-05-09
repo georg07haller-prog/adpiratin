@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   AlertTriangle, Upload, ArrowLeft, Coins, Sparkles,
   CheckCircle, XCircle, DollarSign, Leaf, MessageSquare,
-  CreditCard, Star, MousePointer
+  CreditCard, Star, MousePointer, Image as ImageIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
