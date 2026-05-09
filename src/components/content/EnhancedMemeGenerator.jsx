@@ -164,7 +164,7 @@ export default function EnhancedMemeGenerator() {
         {/* Meme Preview */}
         <div ref={memeRef} className="relative aspect-square bg-black rounded-lg overflow-hidden">
           {meme.customImage ? (
-            <img src={meme.customImage} alt="Meme" className="w-full h-full object-cover" />
+            <img src={meme.customImage} alt="Custom uploaded image used as meme background" className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-[#1a2d4a] to-[#0a1628] flex items-center justify-center">
               <Image className="w-24 h-24 text-[#5a7a9a]" />
