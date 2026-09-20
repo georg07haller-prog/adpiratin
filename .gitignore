@@ -14,3 +14,4 @@ build/
 .idea/
 base44/
 *.base44
+base44/.app.jsonc
